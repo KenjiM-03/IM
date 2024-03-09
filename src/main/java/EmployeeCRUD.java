@@ -26,7 +26,9 @@ import java.sql.ResultSet;
  */
 public class EmployeeCRUD extends javax.swing.JFrame {
 
-//=======================================================================================================
+
+
+    //=======================================================================================================
     // Method to load employee data from the database
     private void loadEmployeeDataFromDatabase() {
         // Get database connection
@@ -100,23 +102,76 @@ private void createEmployee() {
 
     private void updateEmployee() {
         try {
-            int employeeId = Integer.parseInt(TField_EmployeeID.getText());
-            String employeeName = TField_EmployeeName.getText();
-            String contactNumber = TField_ContactNumber.getText();
+            int employeeId = Integer.parseInt(TField_EmployeeID.getText().trim());
+            String employeeName = TField_EmployeeName.getText().trim();
+            String contactNumber = TField_ContactNumber.getText().trim();
             String gender = (String) Dropdown_Gender.getSelectedItem();
-            String dateOfBirth = TField_DateOfBirth.getText();
+            String dateOfBirth = TField_DateOfBirth.getText().trim();
             String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
 
+            // Validation to ensure that input is not just spaces
+            if (employeeName.isEmpty() && contactNumber.isEmpty() && dateOfBirth.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in at least one field to update.");
+                return;
+            }
+
             Connection connection = DatabaseConnector.getConnection();
-            Employee.updateEmployee(connection, employeeId, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
-            JOptionPane.showMessageDialog(this, "Employee updated successfully!");
-            refreshTable();
+
+            // Prepare SQL with dynamic setting of fields to update based on user input
+            StringBuilder sqlBuilder = new StringBuilder("UPDATE employees SET ");
+            boolean first = true;
+
+            if (!employeeName.isEmpty()) {
+                sqlBuilder.append("Employee_Name = ?");
+                first = false;
+            }
+            if (!contactNumber.isEmpty()) {
+                if (!first) sqlBuilder.append(", ");
+                sqlBuilder.append("Contact_Number = ?");
+                first = false;
+            }
+            // Assuming gender is always selected. Add similar checks if needed.
+            if (!first) sqlBuilder.append(", ");
+            sqlBuilder.append("Gender = ?");
+
+            if (!dateOfBirth.isEmpty()) {
+                if (!first) sqlBuilder.append(", ");
+                sqlBuilder.append("Date_of_Birth = ?");
+            }
+
+            sqlBuilder.append(" WHERE Employee_ID = ?");
+
+            PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString());
+            int index = 1;
+
+            if (!employeeName.isEmpty()) {
+                statement.setString(index++, employeeName);
+            }
+            if (!contactNumber.isEmpty()) {
+                statement.setString(index++, contactNumber);
+            }
+            statement.setString(index++, gender); // Gender update assumed
+            if (!dateOfBirth.isEmpty()) {
+                statement.setString(index++, dateOfBirth);
+            }
+
+            statement.setInt(index, employeeId);
+
+            int updated = statement.executeUpdate();
+            if (updated > 0) {
+                JOptionPane.showMessageDialog(this, "Employee updated successfully!");
+                refreshTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Employee not found.");
+            }
+
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(this, "Please enter a valid Employee ID.");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error updating employee: " + e.getMessage());
         }
     }
+
 
     private void deleteEmployee() {
         try {
@@ -157,6 +212,20 @@ private void createEmployee() {
     public EmployeeCRUD() {
         initComponents();
         loadEmployeeDataFromDatabase();
+
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = jTable1.rowAtPoint(evt.getPoint());
+                if (row >= 0) {
+                    TField_EmployeeID.setText(jTable1.getValueAt(row, 0).toString());
+                    TField_EmployeeName.setText(jTable1.getValueAt(row, 1).toString());
+                    TField_ContactNumber.setText(jTable1.getValueAt(row, 2).toString());
+                    Dropdown_Gender.setSelectedItem(jTable1.getValueAt(row, 3).toString());
+                    TField_DateOfBirth.setText(jTable1.getValueAt(row, 4).toString());
+                    Dropdown_JobType.setSelectedItem(jTable1.getValueAt(row, 5).toString());
+                }
+            }
+        });
 
     }
 
