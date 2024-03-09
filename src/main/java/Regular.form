@@ -79,9 +79,9 @@
                               <Component id="Dropdown_EName" alignment="0" pref="294" max="32767" attributes="0"/>
                               <Component id="TField_EmployeeID" alignment="0" max="32767" attributes="0"/>
                               <Component id="TField_timeout" alignment="0" max="32767" attributes="0"/>
-                              <Component id="TField_timeout1" alignment="1" max="32767" attributes="0"/>
+                              <Component id="TField_overtimein" alignment="1" max="32767" attributes="0"/>
                               <Component id="EmployeeID2" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="TField_breakin1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="TField_overtimeout" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -131,11 +131,11 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="EmployeeID2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="TField_timeout1" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="TField_overtimein" min="-2" pref="45" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="EmployeeID6" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="TField_breakin1" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="TField_overtimeout" min="-2" pref="45" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" min="-2" pref="722" max="-2" attributes="0"/>
                   </Group>
@@ -290,9 +290,9 @@
             <Property name="text" type="java.lang.String" value="Overtime Time Out"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="TField_timeout1">
+        <Component class="javax.swing.JTextField" name="TField_overtimein">
         </Component>
-        <Component class="javax.swing.JTextField" name="TField_breakin1">
+        <Component class="javax.swing.JTextField" name="TField_overtimeout">
         </Component>
       </SubComponents>
     </Container>
