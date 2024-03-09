@@ -198,6 +198,8 @@
                 loadPieceworkDetails();
                 populateEmployeeDropdown();
                 populateSizeDropdown();
+                TField_EmployeeID.setEditable(false);
+
 
             }
 
