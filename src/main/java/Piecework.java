@@ -185,6 +185,46 @@
                     JOptionPane.showMessageDialog(this, "Error fetching employee ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            private void createPiecework() {
+                // Validate input fields
+                if (TField_EmployeeID.getText().isEmpty() || TField_Quantity.getText().isEmpty() || Dropdown_Size.getSelectedIndex() == -1) {
+                    JOptionPane.showMessageDialog(this, "Please fill in all required fields.");
+                    return;
+                }
+
+                try {
+                    // Parse input values
+                    int employeeId = Integer.parseInt(TField_EmployeeID.getText());
+                    int sizeId = getSelectedSizeId();
+                    int quantity = Integer.parseInt(TField_Quantity.getText());
+                    int transactionId = generateTransactionId();
+
+                    // Get a connection from DatabaseConnector
+                    Connection connection = DatabaseConnector.getConnection();
+
+                    // Prepare and execute INSERT statement
+                    String sql = "INSERT INTO piecework_details (Employee_ID, PackType_ID, Quantity, Transaction_ID) VALUES (?, ?, ?, ?)";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    statement.setInt(1, employeeId);
+                    statement.setInt(2, sizeId);
+                    statement.setInt(3, quantity);
+                    statement.setInt(4, transactionId);
+                    statement.executeUpdate();
+
+                    // Refresh table to reflect changes
+                    loadPieceworkDetails();
+
+                    // Provide user feedback
+                    JOptionPane.showMessageDialog(this, "Piecework added successfully.");
+
+                } catch (SQLException e) {
+                    // Handle insertion error gracefully
+                    JOptionPane.showMessageDialog(this, "Error adding piecework: " + e.getMessage());
+                }
+            }
+
+            // Call this method when the "Add" button is clicked
+
 
 
 
@@ -378,9 +418,10 @@
             private void Button_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_backActionPerformed
                 InstructionsKt.redirectToDashboard(this);
             }//GEN-LAST:event_Button_backActionPerformed
-            private void Button_addActionPerformed(ActionEvent evt){
-                insertPiecework();
+            private void Button_addActionPerformed(java.awt.event.ActionEvent evt) {
+                createPiecework();
             }
+
             /**
              * @param args the command line arguments
              */
