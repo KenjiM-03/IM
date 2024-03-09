@@ -62,7 +62,6 @@ private void loadRegularEmployeeDetails() {
     //=================================================================================
         private void createEmployee() {
     String employeeName = TField_EmployeeID.getName();
-
         }
     // ==================================================================================
     /**
