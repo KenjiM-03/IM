@@ -26,7 +26,9 @@ import java.sql.ResultSet;
  */
 public class EmployeeCRUD extends javax.swing.JFrame {
 
-//=======================================================================================================
+
+
+    //=======================================================================================================
     // Method to load employee data from the database
     private void loadEmployeeDataFromDatabase() {
         // Get database connection
@@ -81,42 +83,95 @@ public class EmployeeCRUD extends javax.swing.JFrame {
             }
         }
     }
-// ============================================================================================
-private void createEmployee() {
-    String employeeName = TField_EmployeeName.getText();
-    String contactNumber = TField_ContactNumber.getText();
-    String gender = (String) Dropdown_Gender.getSelectedItem();
-    String dateOfBirth = TField_DateOfBirth.getText();
-    String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
-    try {
-        Connection connection = DatabaseConnector.getConnection();
-        Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
-        refreshTable();
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
+    // ============================================================================================
+    private void createEmployee() {
+        String employeeName = TField_EmployeeName.getText();
+        String contactNumber = TField_ContactNumber.getText();
+        String gender = (String) Dropdown_Gender.getSelectedItem();
+        String dateOfBirth = TField_DateOfBirth.getText();
+        String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
+        try {
+            Connection connection = DatabaseConnector.getConnection();
+            Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
+            refreshTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
+        }
     }
-}
 
     private void updateEmployee() {
         try {
-            int employeeId = Integer.parseInt(TField_EmployeeID.getText());
-            String employeeName = TField_EmployeeName.getText();
-            String contactNumber = TField_ContactNumber.getText();
+            int employeeId = Integer.parseInt(TField_EmployeeID.getText().trim());
+            String employeeName = TField_EmployeeName.getText().trim();
+            String contactNumber = TField_ContactNumber.getText().trim();
             String gender = (String) Dropdown_Gender.getSelectedItem();
-            String dateOfBirth = TField_DateOfBirth.getText();
+            String dateOfBirth = TField_DateOfBirth.getText().trim();
             String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
 
+            // Validation to ensure that input is not just spaces
+            if (employeeName.isEmpty() && contactNumber.isEmpty() && dateOfBirth.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in at least one field to update.");
+                return;
+            }
+
             Connection connection = DatabaseConnector.getConnection();
-            Employee.updateEmployee(connection, employeeId, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
-            JOptionPane.showMessageDialog(this, "Employee updated successfully!");
-            refreshTable();
+
+            // Prepare SQL with dynamic setting of fields to update based on user input
+            StringBuilder sqlBuilder = new StringBuilder("UPDATE employees SET ");
+            boolean first = true;
+
+            if (!employeeName.isEmpty()) {
+                sqlBuilder.append("Employee_Name = ?");
+                first = false;
+            }
+            if (!contactNumber.isEmpty()) {
+                if (!first) sqlBuilder.append(", ");
+                sqlBuilder.append("Contact_Number = ?");
+                first = false;
+            }
+            // Assuming gender is always selected. Add similar checks if needed.
+            if (!first) sqlBuilder.append(", ");
+            sqlBuilder.append("Gender = ?");
+
+            if (!dateOfBirth.isEmpty()) {
+                if (!first) sqlBuilder.append(", ");
+                sqlBuilder.append("Date_of_Birth = ?");
+            }
+
+            sqlBuilder.append(" WHERE Employee_ID = ?");
+
+            PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString());
+            int index = 1;
+
+            if (!employeeName.isEmpty()) {
+                statement.setString(index++, employeeName);
+            }
+            if (!contactNumber.isEmpty()) {
+                statement.setString(index++, contactNumber);
+            }
+            statement.setString(index++, gender); // Gender update assumed
+            if (!dateOfBirth.isEmpty()) {
+                statement.setString(index++, dateOfBirth);
+            }
+
+            statement.setInt(index, employeeId);
+
+            int updated = statement.executeUpdate();
+            if (updated > 0) {
+                JOptionPane.showMessageDialog(this, "Employee updated successfully!");
+                refreshTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Employee not found.");
+            }
+
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(this, "Please enter a valid Employee ID.");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error updating employee: " + e.getMessage());
         }
     }
+
 
     private void deleteEmployee() {
         try {
@@ -157,6 +212,20 @@ private void createEmployee() {
     public EmployeeCRUD() {
         initComponents();
         loadEmployeeDataFromDatabase();
+
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = jTable1.rowAtPoint(evt.getPoint());
+                if (row >= 0) {
+                    TField_EmployeeID.setText(jTable1.getValueAt(row, 0).toString());
+                    TField_EmployeeName.setText(jTable1.getValueAt(row, 1).toString());
+                    TField_ContactNumber.setText(jTable1.getValueAt(row, 2).toString());
+                    Dropdown_Gender.setSelectedItem(jTable1.getValueAt(row, 3).toString());
+                    TField_DateOfBirth.setText(jTable1.getValueAt(row, 4).toString());
+                    Dropdown_JobType.setSelectedItem(jTable1.getValueAt(row, 5).toString());
+                }
+            }
+        });
 
     }
 
@@ -243,12 +312,12 @@ private void createEmployee() {
         });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object [][] {
 
-            },
-            new String [] {
-                "Employee ID", "Employee Name", "Contact Number", "Gender", "Date of Birth", "Job Type"
-            }
+                },
+                new String [] {
+                        "Employee ID", "Employee Name", "Contact Number", "Gender", "Date of Birth", "Job Type"
+                }
         ));
         jScrollPane1.setViewportView(jTable1);
 
@@ -270,98 +339,98 @@ private void createEmployee() {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(EmployeeID)
-                                    .addComponent(EmployeeName)
-                                    .addComponent(JobType)
-                                    .addComponent(Contactnumber)
-                                    .addComponent(Gender)
-                                    .addComponent(DateOfBirth)
-                                    .addComponent(TField_EmployeeName)
-                                    .addComponent(TField_EmployeeID)
-                                    .addComponent(TField_ContactNumber)
-                                    .addComponent(Dropdown_Gender, 0, 300, Short.MAX_VALUE)
-                                    .addComponent(TField_DateOfBirth)
-                                    .addComponent(Dropdown_JobType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(Button_add)
-                                .addGap(18, 18, 18)
-                                .addComponent(Button_update)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                                .addComponent(Button_clear)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(Button_delete)))
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(EmployeeID)
+                                                                        .addComponent(EmployeeName)
+                                                                        .addComponent(JobType)
+                                                                        .addComponent(Contactnumber)
+                                                                        .addComponent(Gender)
+                                                                        .addComponent(DateOfBirth)
+                                                                        .addComponent(TField_EmployeeName)
+                                                                        .addComponent(TField_EmployeeID)
+                                                                        .addComponent(TField_ContactNumber)
+                                                                        .addComponent(Dropdown_Gender, 0, 300, Short.MAX_VALUE)
+                                                                        .addComponent(TField_DateOfBirth)
+                                                                        .addComponent(Dropdown_JobType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addGap(14, 14, 14)
+                                                                .addComponent(Button_add)
+                                                                .addGap(18, 18, 18)
+                                                                .addComponent(Button_update)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                                                                .addComponent(Button_clear)))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(Button_delete)))
+                                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(EmployeeID)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TField_EmployeeID, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(EmployeeName)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TField_EmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Contactnumber)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TField_ContactNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Gender)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Dropdown_Gender, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(DateOfBirth)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TField_DateOfBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(JobType)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Dropdown_JobType, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Button_update)
-                    .addComponent(Button_clear)
-                    .addComponent(Button_add))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(27, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 597, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Button_delete)
-                .addGap(12, 12, 12))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(42, 42, 42)
+                                .addComponent(EmployeeID)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TField_EmployeeID, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(EmployeeName)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TField_EmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(Contactnumber)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TField_ContactNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(Gender)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Dropdown_Gender, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(DateOfBirth)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TField_DateOfBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JobType)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Dropdown_JobType, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(Button_update)
+                                        .addComponent(Button_clear)
+                                        .addComponent(Button_add))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap(27, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 597, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Button_delete)
+                                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Button_back)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(Button_back)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Button_back)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(Button_back)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -398,7 +467,7 @@ private void createEmployee() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
