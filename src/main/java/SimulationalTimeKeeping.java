@@ -36,27 +36,12 @@ public class SimulationalTimeKeeping extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(153, 255, 255));
         jLabel1.setText("Enter your code (Just a demonstration)");
 
-        TField_EnterCode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_EnterCodeActionPerformed(evt);
-            }
-        });
-
         Button_in.setText("IN");
-        Button_in.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_inActionPerformed(evt);
-            }
-        });
 
         Button_out.setText("OUT");
-        Button_out.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_outActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

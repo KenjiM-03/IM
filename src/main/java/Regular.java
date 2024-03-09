@@ -60,48 +60,7 @@ private void loadRegularEmployeeDetails() {
 }
 
     //=================================================================================
-    private void createEmployee() {
-    String employeeName = Dropdown_EName.getSelectedItem().toString();
-    String timein = TField_timein.getText();
-    String breakout = TField_breakout.getText();
-    String breakin = TField_breakin.getText();
-    String timeout = TField_timeout.getText();
-    String overtimein = TField_overtimein.getText();
-    String overtimeout = TField_overtimeout.getText();
-    try {
-        Connection connection = DatabaseConnector.getConnection();
-        Employee.insertEmployee(connection, employeeName, timein, breakout, breakin, timeout, overtimein, overtimeout);
-        refreshTable();
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error creating employee", "Error", JOptionPane.ERROR_MESSAGE);
-    }
 
-    private void updateEmployee() {
-        try {
-            int employee
-        }
-        }
-        String employeeName = Dropdown_EName.getSelectedItem().toString();
-        String timein = TField_timein.getText();
-        String breakout = TField_breakout.getText();
-        String breakin = TField_breakin.getText();
-        String timeout = TField_timeout.getText();
-        String overtimein = TField_overtimein.getText();
-        String overtimeout = TField_overtimeout.getText();
-        try {
-            Connection connection = DatabaseConnector.getConnection();
-            Employee.updateEmployee(connection, employeeName, timein, breakout, breakin, timeout, overtimein, overtimeout);
-            refreshTable();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error updating employee", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }private void refreshTable() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
-        loadRegularEmployeeDetails();
-    }
     // ==================================================================================
     /**
      * Creates new form Regular
@@ -156,22 +115,30 @@ private void loadRegularEmployeeDetails() {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeID1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID1.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID1.setText("Time Out");
 
         EmployeeName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeName.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeName.setText("Employee Name:");
 
         EmployeeID3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID3.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID3.setText("Break In");
 
         EmployeeID4.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID4.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID4.setText("Time In");
 
         EmployeeID5.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID5.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID5.setText("Break Out");
+
+        TField_EmployeeID.setEditable(false);
 
         Dropdown_EName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -198,9 +165,11 @@ private void loadRegularEmployeeDetails() {
         });
 
         EmployeeID2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID2.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID2.setText("Overtime Time In");
 
         EmployeeID6.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID6.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID6.setText("Overtime Time Out");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -367,7 +336,7 @@ private void loadRegularEmployeeDetails() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
