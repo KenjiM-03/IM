@@ -3,6 +3,7 @@
          * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
          */
         import java.awt.event.ActionEvent;
+        import java.awt.event.ActionListener;
         import java.sql.*;
         import javax.swing.*;
         import javax.swing.table.DefaultTableModel;
@@ -163,6 +164,68 @@
                 // Replace with your preferred logic (e.g., using timestamps or sequences)
                 // ...
             }
+            private void autofillEmployeeID() {
+                // Get the selected employee name from the dropdown
+                String selectedEmployeeName = (String) Dropdown_EName.getSelectedItem();
+
+                // Connect to the database and fetch the corresponding employee ID
+                try (Connection conn = DatabaseConnector.getConnection();
+                     PreparedStatement stmt = conn.prepareStatement("SELECT Employee_ID FROM Employees WHERE Employee_Name = ?")) {
+
+                    stmt.setString(1, selectedEmployeeName);
+                    ResultSet rs = stmt.executeQuery();
+
+                    // If a result is found, populate the Employee ID field
+                    if (rs.next()) {
+                        int employeeID = rs.getInt("Employee_ID");
+                        TField_EmployeeID.setText(String.valueOf(employeeID));
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error fetching employee ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            private void createPiecework() {
+                // Validate input fields
+                if (TField_EmployeeID.getText().isEmpty() || TField_Quantity.getText().isEmpty() || Dropdown_Size.getSelectedIndex() == -1) {
+                    JOptionPane.showMessageDialog(this, "Please fill in all required fields.");
+                    return;
+                }
+
+                try {
+                    // Parse input values
+                    int employeeId = Integer.parseInt(TField_EmployeeID.getText());
+                    int sizeId = getSelectedSizeId();
+                    int quantity = Integer.parseInt(TField_Quantity.getText());
+                    int transactionId = generateTransactionId();
+
+                    // Get a connection from DatabaseConnector
+                    Connection connection = DatabaseConnector.getConnection();
+
+                    // Prepare and execute INSERT statement
+                    String sql = "INSERT INTO piecework_details (Employee_ID, PackType_ID, Quantity, Transaction_ID) VALUES (?, ?, ?, ?)";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    statement.setInt(1, employeeId);
+                    statement.setInt(2, sizeId);
+                    statement.setInt(3, quantity);
+                    statement.setInt(4, transactionId);
+                    statement.executeUpdate();
+
+                    // Refresh table to reflect changes
+                    loadPieceworkDetails();
+
+                    // Provide user feedback
+                    JOptionPane.showMessageDialog(this, "Piecework added successfully.");
+
+                } catch (SQLException e) {
+                    // Handle insertion error gracefully
+                    JOptionPane.showMessageDialog(this, "Error adding piecework: " + e.getMessage());
+                }
+            }
+
+            // Call this method when the "Add" button is clicked
+
+
 
 
 
@@ -175,6 +238,8 @@
                 loadPieceworkDetails();
                 populateEmployeeDropdown();
                 populateSizeDropdown();
+                TField_EmployeeID.setEditable(false);
+
 
             }
 
@@ -217,6 +282,15 @@
                         insertPiecework();
                     }
                 });
+                // Add action listener to Dropdown_EName
+                Dropdown_EName.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Call method to autofill employee ID field
+                        autofillEmployeeID();
+                    }
+                });
+
 
 
                 jPanel1.setBackground(new java.awt.Color(0, 51, 51));
@@ -344,9 +418,10 @@
             private void Button_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_backActionPerformed
                 InstructionsKt.redirectToDashboard(this);
             }//GEN-LAST:event_Button_backActionPerformed
-            private void Button_addActionPerformed(ActionEvent evt){
-                insertPiecework();
+            private void Button_addActionPerformed(java.awt.event.ActionEvent evt) {
+                createPiecework();
             }
+
             /**
              * @param args the command line arguments
              */
