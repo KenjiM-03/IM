@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -59,6 +60,49 @@ private void loadRegularEmployeeDetails() {
 }
 
     //=================================================================================
+    private void createEmployee() {
+    String employeeName = Dropdown_EName.getSelectedItem().toString();
+    String timein = TField_timein.getText();
+    String breakout = TField_breakout.getText();
+    String breakin = TField_breakin.getText();
+    String timeout = TField_timeout.getText();
+    String overtimein = TField_overtimein.getText();
+    String overtimeout = TField_overtimeout.getText();
+    try {
+        Connection connection = DatabaseConnector.getConnection();
+        Employee.insertEmployee(connection, employeeName, timein, breakout, breakin, timeout, overtimein, overtimeout);
+        refreshTable();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error creating employee", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void updateEmployee() {
+        try {
+            int employee
+        }
+        }
+        String employeeName = Dropdown_EName.getSelectedItem().toString();
+        String timein = TField_timein.getText();
+        String breakout = TField_breakout.getText();
+        String breakin = TField_breakin.getText();
+        String timeout = TField_timeout.getText();
+        String overtimein = TField_overtimein.getText();
+        String overtimeout = TField_overtimeout.getText();
+        try {
+            Connection connection = DatabaseConnector.getConnection();
+            Employee.updateEmployee(connection, employeeName, timein, breakout, breakin, timeout, overtimein, overtimeout);
+            refreshTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating employee", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }private void refreshTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        loadRegularEmployeeDetails();
+    }
+    // ==================================================================================
     /**
      * Creates new form Regular
      */
@@ -97,8 +141,8 @@ private void loadRegularEmployeeDetails() {
         Button_delete = new javax.swing.JButton();
         EmployeeID2 = new javax.swing.JLabel();
         EmployeeID6 = new javax.swing.JLabel();
-        TField_timeout1 = new javax.swing.JTextField();
-        TField_breakin1 = new javax.swing.JTextField();
+        TField_overtimein = new javax.swing.JTextField();
+        TField_overtimeout = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,56 +173,11 @@ private void loadRegularEmployeeDetails() {
         EmployeeID5.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         EmployeeID5.setText("Break Out");
 
-        TField_EmployeeID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_EmployeeIDActionPerformed(evt);
-            }
-        });
-
         Dropdown_EName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        Dropdown_EName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Dropdown_ENameActionPerformed(evt);
-            }
-        });
-
-        TField_breakout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakoutActionPerformed(evt);
-            }
-        });
-
-        TField_breakin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakinActionPerformed(evt);
-            }
-        });
-
-        TField_timeout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeoutActionPerformed(evt);
-            }
-        });
-
-        TField_timein.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeinActionPerformed(evt);
-            }
-        });
 
         Button_cancel.setText("Cancel");
-        Button_cancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_cancelActionPerformed(evt);
-            }
-        });
 
         Button_update.setText("Update");
-        Button_update.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_updateActionPerformed(evt);
-            }
-        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -204,18 +203,6 @@ private void loadRegularEmployeeDetails() {
         EmployeeID6.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         EmployeeID6.setText("Overtime Time Out");
 
-        TField_timeout1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeout1ActionPerformed(evt);
-            }
-        });
-
-        TField_breakin1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakin1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -238,9 +225,9 @@ private void loadRegularEmployeeDetails() {
                             .addComponent(Dropdown_EName, 0, 294, Short.MAX_VALUE)
                             .addComponent(TField_EmployeeID)
                             .addComponent(TField_timeout)
-                            .addComponent(TField_timeout1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(TField_overtimein, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(EmployeeID2)
-                            .addComponent(TField_breakin1))
+                            .addComponent(TField_overtimeout))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -284,11 +271,11 @@ private void loadRegularEmployeeDetails() {
                         .addGap(18, 18, 18)
                         .addComponent(EmployeeID2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TField_timeout1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TField_overtimein, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(EmployeeID6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TField_breakin1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(TField_overtimeout, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -424,11 +411,11 @@ private void loadRegularEmployeeDetails() {
     private javax.swing.JLabel EmployeeName;
     private javax.swing.JTextField TField_EmployeeID;
     private javax.swing.JTextField TField_breakin;
-    private javax.swing.JTextField TField_breakin1;
     private javax.swing.JTextField TField_breakout;
+    private javax.swing.JTextField TField_overtimein;
+    private javax.swing.JTextField TField_overtimeout;
     private javax.swing.JTextField TField_timein;
     private javax.swing.JTextField TField_timeout;
-    private javax.swing.JTextField TField_timeout1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
