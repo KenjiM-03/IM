@@ -384,7 +384,6 @@ private void createEmployee() {
     }//GEN-LAST:event_Button_addActionPerformed
 
     private void Dropdown_GenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dropdown_GenderActionPerformed
-        Dropdown_Gender.setModel(new DefaultComboBoxModel<>(new String[]{"Male", "Female", "Other"}));
     }//GEN-LAST:event_Dropdown_GenderActionPerformed
 
     private void Button_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_deleteActionPerformed
