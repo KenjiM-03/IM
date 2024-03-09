@@ -25,6 +25,7 @@
                     return;
                 }
 
+
                 try {
                     String query = "SELECT pd.Employee_ID, e.Employee_Name, pt.Size, pd.Quantity, pd.Transaction_ID, t.Date "
                             + "FROM piecework_details pd "
