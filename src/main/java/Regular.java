@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -59,6 +60,10 @@ private void loadRegularEmployeeDetails() {
 }
 
     //=================================================================================
+        private void createEmployee() {
+    String employeeName = TField_EmployeeID.getName();
+        }
+    // ==================================================================================
     /**
      * Creates new form Regular
      */
@@ -97,8 +102,8 @@ private void loadRegularEmployeeDetails() {
         Button_delete = new javax.swing.JButton();
         EmployeeID2 = new javax.swing.JLabel();
         EmployeeID6 = new javax.swing.JLabel();
-        TField_timeout1 = new javax.swing.JTextField();
-        TField_breakin1 = new javax.swing.JTextField();
+        TField_overtimein = new javax.swing.JTextField();
+        TField_overtimeout = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -112,73 +117,36 @@ private void loadRegularEmployeeDetails() {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeID1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID1.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID1.setText("Time Out");
 
         EmployeeName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeName.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeName.setText("Employee Name:");
 
         EmployeeID3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID3.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID3.setText("Break In");
 
         EmployeeID4.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID4.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID4.setText("Time In");
 
         EmployeeID5.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID5.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID5.setText("Break Out");
 
-        TField_EmployeeID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_EmployeeIDActionPerformed(evt);
-            }
-        });
+        TField_EmployeeID.setEditable(false);
 
         Dropdown_EName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        Dropdown_EName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Dropdown_ENameActionPerformed(evt);
-            }
-        });
-
-        TField_breakout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakoutActionPerformed(evt);
-            }
-        });
-
-        TField_breakin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakinActionPerformed(evt);
-            }
-        });
-
-        TField_timeout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeoutActionPerformed(evt);
-            }
-        });
-
-        TField_timein.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeinActionPerformed(evt);
-            }
-        });
 
         Button_cancel.setText("Cancel");
-        Button_cancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_cancelActionPerformed(evt);
-            }
-        });
 
         Button_update.setText("Update");
-        Button_update.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_updateActionPerformed(evt);
-            }
-        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -199,22 +167,12 @@ private void loadRegularEmployeeDetails() {
         });
 
         EmployeeID2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID2.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID2.setText("Overtime Time In");
 
         EmployeeID6.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID6.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID6.setText("Overtime Time Out");
-
-        TField_timeout1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_timeout1ActionPerformed(evt);
-            }
-        });
-
-        TField_breakin1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TField_breakin1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -238,9 +196,9 @@ private void loadRegularEmployeeDetails() {
                             .addComponent(Dropdown_EName, 0, 294, Short.MAX_VALUE)
                             .addComponent(TField_EmployeeID)
                             .addComponent(TField_timeout)
-                            .addComponent(TField_timeout1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(TField_overtimein, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(EmployeeID2)
-                            .addComponent(TField_breakin1))
+                            .addComponent(TField_overtimeout))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -284,11 +242,11 @@ private void loadRegularEmployeeDetails() {
                         .addGap(18, 18, 18)
                         .addComponent(EmployeeID2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TField_timeout1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TField_overtimein, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(EmployeeID6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TField_breakin1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(TField_overtimeout, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -380,7 +338,7 @@ private void loadRegularEmployeeDetails() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -424,11 +382,11 @@ private void loadRegularEmployeeDetails() {
     private javax.swing.JLabel EmployeeName;
     private javax.swing.JTextField TField_EmployeeID;
     private javax.swing.JTextField TField_breakin;
-    private javax.swing.JTextField TField_breakin1;
     private javax.swing.JTextField TField_breakout;
+    private javax.swing.JTextField TField_overtimein;
+    private javax.swing.JTextField TField_overtimeout;
     private javax.swing.JTextField TField_timein;
     private javax.swing.JTextField TField_timeout;
-    private javax.swing.JTextField TField_timeout1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
