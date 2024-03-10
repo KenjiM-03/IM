@@ -13,6 +13,28 @@ import javax.swing.JOptionPane;
  */
 public class AdminSignIn extends javax.swing.JFrame {
 
+    public static int getCurrentAdminId() {
+        String selectedAdminName = (String) DropDown_ChoosingAdmin.getSelectedItem();
+        int adminId = -1;
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin_Info WHERE Admin_Name = ?")) {
+
+            stmt.setString(1, selectedAdminName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                adminId = rs.getInt("Admin_ID");
+            } else {
+                JOptionPane.showMessageDialog(null, "Admin not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error getting admin ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return adminId;
+    }
+
+
     /**
      * Creates new form AdminSignIn
      */
@@ -27,7 +49,7 @@ public class AdminSignIn extends javax.swing.JFrame {
         // Connect to the database and populate the ComboBox
         try (Connection conn = DatabaseConnector.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT Admin_Name FROM Admin")) {
+             ResultSet rs = stmt.executeQuery("SELECT Admin_Name FROM Admin_Info")) {
 
             while (rs.next()) {
                 DropDown_ChoosingAdmin.addItem(rs.getString("Admin_Name"));
@@ -37,6 +59,7 @@ public class AdminSignIn extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error populating admin list: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
 
     /**
@@ -119,7 +142,7 @@ public class AdminSignIn extends javax.swing.JFrame {
         }
 
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin WHERE Admin_Name = ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin_Info WHERE Admin_Name = ?")) {
 
             stmt.setString(1, selectedAdminName);
             ResultSet rs = stmt.executeQuery();
@@ -192,14 +215,16 @@ public class AdminSignIn extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminSignIn().setVisible(true);
+                AdminSignIn adminSignIn = new AdminSignIn();
+                adminSignIn.setVisible(true);
             }
         });
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Button_LogIn;
-    private javax.swing.JComboBox<String> DropDown_ChoosingAdmin;
+    private static javax.swing.JComboBox<String> DropDown_ChoosingAdmin;
     private java.awt.Label Label_ASI;
     // End of variables declaration//GEN-END:variables
 }
