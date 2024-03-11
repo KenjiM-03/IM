@@ -27,7 +27,7 @@ public class Payslip extends javax.swing.JFrame {
 
         Button_back = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        Button_AllRE2 = new javax.swing.JButton();
+        Button_Allemploy = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         TField_EmployeeID = new javax.swing.JTextField();
         Button_add = new javax.swing.JButton();
@@ -44,6 +44,8 @@ public class Payslip extends javax.swing.JFrame {
         Button_Print = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        Button_AllReg = new javax.swing.JButton();
+        Button_Allpwe = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,15 +58,30 @@ public class Payslip extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        Button_AllRE2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        Button_AllRE2.setText("All Employees");
+        Button_Allemploy.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Button_Allemploy.setText("All Employees");
+        Button_Allemploy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_AllemployActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel1.setText("Employee ID:");
 
         TField_EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        TField_EmployeeID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TField_EmployeeIDActionPerformed(evt);
+            }
+        });
 
         Button_add.setText("Add");
+        Button_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_addActionPerformed(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(0, 51, 51));
 
@@ -80,6 +97,11 @@ public class Payslip extends javax.swing.JFrame {
 
         Button_delete.setBackground(new java.awt.Color(51, 0, 0));
         Button_delete.setText("Delete");
+        Button_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_deleteActionPerformed(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(102, 102, 102));
         jPanel3.setForeground(new java.awt.Color(51, 51, 51));
@@ -102,9 +124,19 @@ public class Payslip extends javax.swing.JFrame {
 
         Button_PrintAll.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         Button_PrintAll.setText("Print All");
+        Button_PrintAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_PrintAllActionPerformed(evt);
+            }
+        });
 
         Button_Print.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         Button_Print.setText("Print");
+        Button_Print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_PrintActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -188,6 +220,22 @@ public class Payslip extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        Button_AllReg.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Button_AllReg.setText("All Regular Employees");
+        Button_AllReg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_AllRegActionPerformed(evt);
+            }
+        });
+
+        Button_Allpwe.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Button_Allpwe.setText("All Piecework Employees");
+        Button_Allpwe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_AllpweActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -197,11 +245,13 @@ public class Payslip extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(Button_add)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(Button_AllRE2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Button_Allemploy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                            .addComponent(TField_EmployeeID, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(TField_EmployeeID, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Button_Allpwe, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Button_AllReg, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -209,8 +259,12 @@ public class Payslip extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(185, 185, 185)
-                .addComponent(Button_AllRE2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59)
+                .addComponent(Button_AllReg, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Button_Allpwe, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Button_Allemploy, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -252,6 +306,38 @@ public class Payslip extends javax.swing.JFrame {
         InstructionsKt.redirectToDashboard(this);
     }//GEN-LAST:event_Button_backActionPerformed
 
+    private void Button_AllRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_AllRegActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_AllRegActionPerformed
+
+    private void Button_AllpweActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_AllpweActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_AllpweActionPerformed
+
+    private void Button_AllemployActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_AllemployActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_AllemployActionPerformed
+
+    private void TField_EmployeeIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TField_EmployeeIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TField_EmployeeIDActionPerformed
+
+    private void Button_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_addActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_addActionPerformed
+
+    private void Button_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_deleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_deleteActionPerformed
+
+    private void Button_PrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_PrintActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_PrintActionPerformed
+
+    private void Button_PrintAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_PrintAllActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Button_PrintAllActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -288,7 +374,9 @@ public class Payslip extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Button_AllRE2;
+    private javax.swing.JButton Button_AllReg;
+    private javax.swing.JButton Button_Allemploy;
+    private javax.swing.JButton Button_Allpwe;
     private javax.swing.JButton Button_Print;
     private javax.swing.JButton Button_PrintAll;
     private javax.swing.JButton Button_add;
