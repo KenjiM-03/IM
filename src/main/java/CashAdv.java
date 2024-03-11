@@ -54,17 +54,24 @@ public class CashAdv extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
+        EmployeeID.setBackground(new java.awt.Color(51, 51, 51));
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeID1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID1.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID1.setText("Employee Name:");
 
         EmployeeID2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID2.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID2.setText("Amount:");
 
         EmployeeID3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID3.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID3.setText("Description:");
+
+        TField_EmployeeID.setEditable(false);
 
         Dropdown_EName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 

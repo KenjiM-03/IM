@@ -173,24 +173,31 @@ private DefaultTableModel tableModel;
         Panel_Count.setBackground(new java.awt.Color(0, 51, 51));
 
         lbl_Regular.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lbl_Regular.setForeground(new java.awt.Color(153, 255, 255));
         lbl_Regular.setText("Regular:");
 
         Employeestotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        Employeestotal.setForeground(new java.awt.Color(153, 255, 255));
         Employeestotal.setText("EMPLOYEES TOTAL");
 
         lbl_Piecework.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lbl_Piecework.setForeground(new java.awt.Color(153, 255, 255));
         lbl_Piecework.setText("Piecework:");
 
         Regular_total.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Regular_total.setForeground(new java.awt.Color(153, 255, 255));
         Regular_total.setText("00");
 
         Piecework_total.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Piecework_total.setForeground(new java.awt.Color(153, 255, 255));
         Piecework_total.setText("00");
 
         BoldRegular.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        BoldRegular.setForeground(new java.awt.Color(153, 255, 255));
         BoldRegular.setText("Regular");
 
         BoldPiecework.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        BoldPiecework.setForeground(new java.awt.Color(153, 255, 255));
         BoldPiecework.setText("Piecework");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(

@@ -48,9 +48,11 @@ public class OvertimeEligible extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeID1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID1.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID1.setText("Employee Name:");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -62,6 +64,8 @@ public class OvertimeEligible extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+
+        TField_EmployeeID.setEditable(false);
 
         Dropdown_EName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 

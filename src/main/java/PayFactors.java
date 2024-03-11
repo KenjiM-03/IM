@@ -81,21 +81,27 @@ public class PayFactors extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(153, 255, 255));
         jLabel2.setText("Additional Pay");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(153, 255, 255));
         jLabel12.setText("Regular");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(153, 255, 255));
         jLabel13.setText("Special Non-Working Holiday:");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(153, 255, 255));
         jLabel14.setText("Regular Holiday:");
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(153, 255, 255));
         jLabel15.setText("Overtime SNW Holiday:");
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(153, 255, 255));
         jLabel16.setText("Overtime Regular Holiday:");
 
         TField_SNWH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -172,30 +178,39 @@ public class PayFactors extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(0, 51, 51));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(153, 255, 255));
         jLabel1.setText("Rates");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(153, 255, 255));
         jLabel4.setText("Regular");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(153, 255, 255));
         jLabel5.setText("Piecework");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(153, 255, 255));
         jLabel6.setText("8 hour work:");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(153, 255, 255));
         jLabel7.setText("Hourly rate:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(153, 255, 255));
         jLabel8.setText("Overtime rate:");
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(153, 255, 255));
         jLabel9.setText("Small:");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(153, 255, 255));
         jLabel10.setText("Medium:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(153, 255, 255));
         jLabel11.setText("Large:");
 
         TField_8hr.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -313,18 +328,23 @@ public class PayFactors extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 51, 51));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(153, 255, 255));
         jLabel3.setText("Deduction");
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(153, 255, 255));
         jLabel17.setText("Regular & Piecework");
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(153, 255, 255));
         jLabel18.setText("Pag-Ibig:");
 
         jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(153, 255, 255));
         jLabel19.setText("Philhealth:");
 
         jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel20.setForeground(new java.awt.Color(153, 255, 255));
         jLabel20.setText("SSS:");
 
         TField_pagibig.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
