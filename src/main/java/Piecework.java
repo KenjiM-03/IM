@@ -5,8 +5,12 @@
         import java.awt.event.ActionEvent;
         import java.awt.event.ActionListener;
         import java.sql.*;
+        import java.text.DateFormat;
+        import java.text.SimpleDateFormat;
+        import java.util.Calendar;
         import javax.swing.*;
         import javax.swing.table.DefaultTableModel;
+        import java.sql.Statement;
 
         /**
          *
@@ -54,7 +58,7 @@
                         comboBoxModel.addElement(employeeName); // Add employee name to the dropdown
                     }
 
-                    Dropdown_EName.setModel(comboBoxModel); // Set the model for the dropdown
+//                    Dropdown_EName.setModel(comboBoxModel); // Set the model for the dropdown
 
                     resultSet.close();
                     statement.close();
@@ -73,6 +77,7 @@
                 }
             }
 
+
             private void insertPiecework() {
                 // Validate input fields
                 if (TField_EmployeeID.getText().isEmpty() || TField_Quantity.getText().isEmpty() || Dropdown_Size.getSelectedIndex() == -1) {
@@ -80,24 +85,49 @@
                     return;
                 }
 
+                Connection connection = null; // Define connection outside try-catch block
+
                 try {
                     // Parse input values
                     int employeeId = Integer.parseInt(TField_EmployeeID.getText());
                     int sizeId = getSelectedSizeId();
                     int quantity = Integer.parseInt(TField_Quantity.getText());
-                    int transactionId = generateTransactionId();
+
+                    // Get admin ID and current date
+                    int adminId = AdminSignIn.getCurrentAdminId();
+                    String currentDate = getCurrentDate();
 
                     // Get a connection from DatabaseConnector
-                    Connection connection = DatabaseConnector.getConnection();
+                    connection = DatabaseConnector.getConnection();
 
-                    // Prepare and execute INSERT statement
-                    String sql = "INSERT INTO piecework_details (Employee_ID, PackType_ID, Quantity, Transaction_ID) VALUES (?, ?, ?, ?)";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    statement.setInt(1, employeeId);
-                    statement.setInt(2, sizeId);
-                    statement.setInt(3, quantity);
-                    statement.setInt(4, transactionId);
-                    statement.executeUpdate();
+                    // Start transaction
+                    connection.setAutoCommit(false);
+
+                    // Prepare and execute INSERT statement for Transaction table
+                    String transactionSql = "INSERT INTO Transaction (Date, Admin_ID) VALUES (?, ?)";
+                    PreparedStatement transactionStatement = connection.prepareStatement(transactionSql, Statement.RETURN_GENERATED_KEYS);
+                    transactionStatement.setString(1, currentDate);
+                    transactionStatement.setInt(2, adminId);
+                    transactionStatement.executeUpdate();
+
+                    // Retrieve the generated transaction ID
+                    ResultSet generatedKeys = transactionStatement.getGeneratedKeys();
+                    int transactionId = -1;
+                    if (generatedKeys.next()) {
+                        transactionId = generatedKeys.getInt(1);
+                    }
+
+                    // Prepare and execute INSERT statement for Piecework_Details table
+                    String pieceworkSql = "INSERT INTO piecework_details (Employee_ID, PackType_ID, Quantity, Transaction_ID) VALUES (?, ?, ?, ?)";
+                    PreparedStatement pieceworkStatement = connection.prepareStatement(pieceworkSql);
+                    pieceworkStatement.setInt(1, employeeId);
+                    pieceworkStatement.setInt(2, sizeId);
+                    pieceworkStatement.setInt(3, quantity);
+                    pieceworkStatement.setInt(4, transactionId);
+                    pieceworkStatement.executeUpdate();
+
+                    // Commit transaction
+                    connection.commit();
 
                     // Refresh table to reflect changes
                     loadPieceworkDetails();
@@ -108,8 +138,48 @@
                 } catch (SQLException e) {
                     // Handle insertion error gracefully
                     JOptionPane.showMessageDialog(this, "Error adding piecework: " + e.getMessage());
+                    try {
+                        // Rollback transaction in case of error
+                        if (connection != null) {
+                            connection.rollback();
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                } finally {
+                    // Ensure connection is closed
+                    if (connection != null) {
+                        try {
+                            connection.setAutoCommit(true);
+                            connection.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
-            }//test
+            }
+
+
+
+            // Method to record the transaction in the Transaction table
+            private void recordTransaction(int transactionId, int adminId, String currentDate, Connection connection) throws SQLException {
+                String transactionSql = "INSERT INTO Transaction (Transaction_ID, Date, Admin_ID) VALUES (?, ?, ?)";
+                PreparedStatement transactionStatement = connection.prepareStatement(transactionSql);
+                transactionStatement.setInt(1, transactionId);
+                transactionStatement.setString(2, currentDate);
+                transactionStatement.setInt(3, adminId);
+                transactionStatement.executeUpdate();
+            }
+
+            // Method to get the current date
+            private String getCurrentDate() {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                return dateFormat.format(cal.getTime());
+            }
+
+
+
             private void populateEmployeeDropdown() {
                 // Remove default items
                 Dropdown_EName.removeAllItems();
@@ -145,17 +215,29 @@
             }
 
 
-            private int getSelectedSizeId() {
-                int selectedIndex = Dropdown_Size.getSelectedIndex();
-                if (selectedIndex == -1) {
-                    // Handle the case where no size is selected
-                    JOptionPane.showMessageDialog(this, "Please select a size.");
-                    return -1;  // Or throw an exception if appropriate
+            private int getSelectedSizeId() throws SQLException {
+                // Get the selected size string from the dropdown
+                String selectedSize = (String) Dropdown_Size.getSelectedItem();
+
+                // Get a connection from DatabaseConnector
+                Connection connection = DatabaseConnector.getConnection();
+
+                // Prepare and execute SELECT statement to get PackType_ID based on Size
+                String sql = "SELECT PackType_ID FROM PackType WHERE Size = ?";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, selectedSize);
+                ResultSet resultSet = statement.executeQuery();
+
+                int sizeId = -1; // Default value if size is not found
+                // Check if result set has data
+                if (resultSet.next()) {
+                    sizeId = resultSet.getInt("PackType_ID");
                 }
 
-                // Assuming the Dropdown_Size's items are populated with size IDs, retrieve the ID
-                return Integer.parseInt((String) Dropdown_Size.getSelectedItem());
+                return sizeId;
             }
+
+
             private int generateTransactionId() {
                 // Option 1: Leverage database-generated IDs (if applicable)
                 return -1; // Database will assign ID during insert
@@ -185,47 +267,6 @@
                     JOptionPane.showMessageDialog(this, "Error fetching employee ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            private void createPiecework() {
-                // Validate input fields
-                if (TField_EmployeeID.getText().isEmpty() || TField_Quantity.getText().isEmpty() || Dropdown_Size.getSelectedIndex() == -1) {
-                    JOptionPane.showMessageDialog(this, "Please fill in all required fields.");
-                    return;
-                }
-
-                try {
-                    // Parse input values
-                    int employeeId = Integer.parseInt(TField_EmployeeID.getText());
-                    int sizeId = getSelectedSizeId();
-                    int quantity = Integer.parseInt(TField_Quantity.getText());
-                    int transactionId = generateTransactionId();
-
-                    // Get a connection from DatabaseConnector
-                    Connection connection = DatabaseConnector.getConnection();
-
-                    // Prepare and execute INSERT statement
-                    String sql = "INSERT INTO piecework_details (Employee_ID, PackType_ID, Quantity, Transaction_ID) VALUES (?, ?, ?, ?)";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    statement.setInt(1, employeeId);
-                    statement.setInt(2, sizeId);
-                    statement.setInt(3, quantity);
-                    statement.setInt(4, transactionId);
-                    statement.executeUpdate();
-
-                    // Refresh table to reflect changes
-                    loadPieceworkDetails();
-
-                    // Provide user feedback
-                    JOptionPane.showMessageDialog(this, "Piecework added successfully.");
-
-                } catch (SQLException e) {
-                    // Handle insertion error gracefully
-                    JOptionPane.showMessageDialog(this, "Error adding piecework: " + e.getMessage());
-                }
-            }
-
-            // Call this method when the "Add" button is clicked
-
-
 
 
 
@@ -419,7 +460,7 @@
                 InstructionsKt.redirectToDashboard(this);
             }//GEN-LAST:event_Button_backActionPerformed
             private void Button_addActionPerformed(java.awt.event.ActionEvent evt) {
-                createPiecework();
+                insertPiecework();
             }
 
             /**
