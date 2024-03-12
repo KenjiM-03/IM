@@ -18,6 +18,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDate;
+
+
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -87,6 +102,11 @@ public class Payslip extends javax.swing.JFrame {
             }
         });
 
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         // Add action listener for other buttons as needed
     }
 
@@ -245,6 +265,202 @@ public class Payslip extends javax.swing.JFrame {
     private void printAllEmployees() {
         // Add logic to print all employees' payslips
     }
+
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
+        // Get the selected row index
+        int rowIndex = jTable1.getSelectedRow();
+
+        // Check if a row is selected
+        if (rowIndex != -1) {
+            // Get the employee ID from the selected row (assuming it's stored as a String)
+            String employeeIDString = (String) jTable1.getValueAt(rowIndex, 0);
+
+            // Parse the employee ID string to an integer
+            int employeeID = Integer.parseInt(employeeIDString);
+
+            // Fetch employee details and calculate payslip
+            String employeeName = (String) jTable1.getValueAt(rowIndex, 1);
+            String jobType = (String) jTable1.getValueAt(rowIndex, 2);
+            double[] payslipDetails = calculatePayslip(employeeID);
+
+            // Generate payslip preview
+            String payslipPreview = generatePayslipPreview(employeeID, employeeName, jobType, payslipDetails);
+
+            // Display payslip preview in JTextArea
+            jTextArea1.setText(payslipPreview);
+        }
+    }
+
+
+    private double[] calculatePayslip(int employeeID) {
+        double[] payslipDetails = new double[5]; // Increase the size to accommodate gross pay and deductions
+        // Query the packtype table to get the rate for each size
+        double rateSmall = getRateFromPackType("Small");
+        double rateMedium = getRateFromPackType("Medium");
+        double rateLarge = getRateFromPackType("Large");
+
+        // Query the piecework_details table to get the quantities for each size for the current week
+        int quantitySmall = getQuantityForSize(employeeID, "Small");
+        int quantityMedium = getQuantityForSize(employeeID, "Medium");
+        int quantityLarge = getQuantityForSize(employeeID, "Large");
+
+        // Calculate total pay for each size based on rate and quantity
+        double totalSmall = rateSmall * quantitySmall;
+        double totalMedium = rateMedium * quantityMedium;
+        double totalLarge = rateLarge * quantityLarge;
+
+        // Store the calculated totals in the payslipDetails array
+        payslipDetails[0] = totalSmall;
+        payslipDetails[1] = totalMedium;
+        payslipDetails[2] = totalLarge;
+
+        // Calculate the gross pay
+        double grossPay = totalSmall + totalMedium + totalLarge;
+        payslipDetails[3] = grossPay;
+
+        // Calculate deductions (e.g., Pag ibig)
+        double pagIbig = calculatePagIbig(employeeID); // Assuming a method to calculate Pag ibig deduction
+        payslipDetails[4] = pagIbig;
+
+        return payslipDetails;
+    }
+
+    private double calculatePagIbig(int employeeID) {
+        // Implement your logic to calculate Pag ibig deduction here
+        // This is just a placeholder method, replace it with your actual implementation
+        return 0.0; // Placeholder return value
+    }
+
+
+
+    private String generatePayslipPreview(int employeeID, String employeeName, String jobType, double[] payslipDetails) {
+        StringBuilder payslipPreview = new StringBuilder();
+
+        // Get current date
+        // Get the current time in milliseconds
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Create a java.sql.Date object using the current time in milliseconds
+        Date currentDate = new Date(currentTimeMillis);
+
+        // Format the date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(currentDate);
+
+        // Append payslip details to the preview
+        payslipPreview.append("No. ").append(employeeID).append("\n");
+        payslipPreview.append("Date: ").append(formattedDate).append("\n");
+        payslipPreview.append("Name: ").append(employeeName).append("\n\n");
+        payslipPreview.append("\t\tPAY SLIP\n\n");
+        payslipPreview.append(" _______________________________________________________\n");
+        payslipPreview.append("Small\t\t\t").append(String.format("%.2f", payslipDetails[0])).append("\n");
+        payslipPreview.append("Medium\t\t\t").append(String.format("%.2f", payslipDetails[1])).append("\n");
+        payslipPreview.append("Large\t\t\t").append(String.format("%.2f", payslipDetails[2])).append("\n");
+        payslipPreview.append(" _______________________________________________________\n");
+        payslipPreview.append("Gross Pay\t\t\t").append(String.format("%.2f", payslipDetails[3])).append("\n\n");
+        payslipPreview.append("Deductions\n");
+        payslipPreview.append("Pag ibig\t\t\t").append(String.format("%.2f", payslipDetails[4])).append("\n");
+        // Add more deductions as needed
+        double totalDeduction = payslipDetails[4]; // Sum of all deductions
+        payslipPreview.append("Total Deduction\t\t").append(String.format("%.2f", totalDeduction)).append("\n\n");
+        double netSalary = payslipDetails[3] - totalDeduction; // Gross Pay - Total Deductions
+        payslipPreview.append("Net Salary\t\t\t").append(String.format("%.2f", netSalary)).append("\n");
+
+        return payslipPreview.toString();
+    }
+
+
+    private double getRateFromPackType(String size) {
+        double rate = 0.0;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DatabaseConnector.getConnection();
+            String query = "SELECT Rate FROM packtype WHERE Size = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, size);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                rate = resultSet.getDouble("Rate");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return rate;
+    }
+
+    private int getQuantityForSize(int employeeID, String size) {
+        int quantity = 0;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDateOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endDateOfWeek = startDateOfWeek.plusDays(6);
+
+        try {
+            connection = DatabaseConnector.getConnection();
+            String query = "SELECT SUM(pd.Quantity) AS TotalQuantity " +
+                    "FROM Piecework_Details pd " +
+                    "JOIN Transaction t ON pd.Transaction_ID = t.Transaction_ID " +
+                    "JOIN PackType pt ON pd.PackType_ID = pt.PackType_ID " +
+                    "WHERE pd.Employee_ID = ? AND pt.Size = ? " +
+                    "AND t.Date BETWEEN ? AND ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, employeeID);
+            statement.setString(2, size);
+            statement.setDate(3, Date.valueOf(startDateOfWeek));
+            statement.setDate(4, Date.valueOf(endDateOfWeek));
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                quantity = resultSet.getInt("TotalQuantity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return quantity;
+    }
+
+
+
+
 
     // Main method is not required here as it's already implemented in the auto-generated code
 
@@ -638,4 +854,6 @@ public class Payslip extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
+
+
 
