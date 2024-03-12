@@ -7,33 +7,19 @@
  */
 
 import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author keo
+ */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-
-
-import java.sql.Date;
-import java.time.temporal.TemporalAdjusters;
 import javax.swing.JOptionPane;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Locale;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
-
+import javax.swing.table.DefaultTableModel;
 
 public class Payslip extends javax.swing.JFrame {
 
@@ -101,11 +87,6 @@ public class Payslip extends javax.swing.JFrame {
             }
         });
 
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
         // Add action listener for other buttons as needed
     }
 
@@ -248,30 +229,6 @@ public class Payslip extends javax.swing.JFrame {
         return rowCount + 1; // Simply increment the row count for demonstration, in practice, you'd use a more robust method to generate unique IDs
     }
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
-        // Get the selected row index
-        int rowIndex = jTable1.getSelectedRow();
-
-        // Check if a row is selected
-        if (rowIndex != -1) {
-            // Get the employee ID from the selected row (assuming it's stored as a String)
-            String employeeIDString = (String) jTable1.getValueAt(rowIndex, 0);
-
-            // Parse the employee ID string to an integer
-            int employeeID = Integer.parseInt(employeeIDString);
-
-            // Fetch employee details and calculate payslip
-            String employeeName = (String) jTable1.getValueAt(rowIndex, 1);
-            String jobType = (String) jTable1.getValueAt(rowIndex, 2);
-            double[] payslipDetails = calculatePayslip(employeeID);
-
-            // Generate payslip preview
-            String payslipPreview = generatePayslipPreview(employeeID, employeeName, jobType, payslipDetails);
-
-            // Display payslip preview in JTextArea
-            jTextArea1.setText(payslipPreview);
-        }
-    }
 
     private void printEmployee() {
         int selectedRow = jTable1.getSelectedRow();
@@ -281,307 +238,13 @@ public class Payslip extends javax.swing.JFrame {
         }
 
         String employeeID = jTable1.getValueAt(selectedRow, 0).toString();
-        String employeeName = jTable1.getValueAt(selectedRow, 1).toString();
-        String jobType = jTable1.getValueAt(selectedRow, 2).toString();
-        double[] payslipDetails = calculatePayslip(Integer.parseInt(employeeID));
-        String payslipPreview = generatePayslipPreview(Integer.parseInt(employeeID), employeeName, jobType, payslipDetails);
-
-        // Print the payslip as a PDF
-        try {
-            String fileName = "Payslip_" + employeeID + ".pdf";
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
-            document.open();
-
-            // Add content to the PDF
-            document.add(new Paragraph(payslipPreview));
-
-            document.close();
-            JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
-        } catch (FileNotFoundException | DocumentException e) {
-            JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // Add logic to print payslip for the selected employee
+        JOptionPane.showMessageDialog(this, "Printing payslip for Employee ID: " + employeeID);
     }
 
     private void printAllEmployees() {
-        // Iterate through each row of the jTable
-        for (int row = 0; row < jTable1.getRowCount(); row++) {
-            String employeeID = jTable1.getValueAt(row, 0).toString();
-            String employeeName = jTable1.getValueAt(row, 1).toString();
-            String jobType = jTable1.getValueAt(row, 2).toString();
-            double[] payslipDetails = calculatePayslip(Integer.parseInt(employeeID));
-            String payslipPreview = generatePayslipPreview(Integer.parseInt(employeeID), employeeName, jobType, payslipDetails);
-
-            // Print the payslip as a PDF
-            try {
-                String fileName = "Payslip_" + employeeID + ".pdf";
-                Document document = new Document();
-                PdfWriter.getInstance(document, new FileOutputStream(fileName));
-                document.open();
-
-                // Add content to the PDF
-                document.add(new Paragraph(payslipPreview));
-
-                document.close();
-                JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
-            } catch (FileNotFoundException | DocumentException e) {
-                JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        // Add logic to print all employees' payslips
     }
-
-
-
-
-    private double[] calculatePayslip(int employeeID) {
-        double[] payslipDetails = new double[11]; // Increased the size to accommodate gross pay, deductions, and cash advances
-        // Query the packtype table to get the rate for each size
-        double rateSmall = getRateFromPackType("Small");
-        double rateMedium = getRateFromPackType("Medium");
-        double rateLarge = getRateFromPackType("Large");
-
-        // Query the piecework_details table to get the quantities for each size for the current week
-        int quantitySmall = getQuantityForSize(employeeID, "Small");
-        int quantityMedium = getQuantityForSize(employeeID, "Medium");
-        int quantityLarge = getQuantityForSize(employeeID, "Large");
-
-        // Calculate total pay for each size based on rate and quantity
-        double totalSmall = rateSmall * quantitySmall;
-        double totalMedium = rateMedium * quantityMedium;
-        double totalLarge = rateLarge * quantityLarge;
-
-        // Store the calculated totals in the payslipDetails array
-        payslipDetails[0] = totalSmall;
-        payslipDetails[1] = totalMedium;
-        payslipDetails[2] = totalLarge;
-
-        // Calculate the gross pay
-        double grossPay = totalSmall + totalMedium + totalLarge;
-        payslipDetails[3] = grossPay;
-
-        // Assuming you're fetching the deduction rates and calculating them...
-        Map<String, Double> deductionRates = fetchDeductionRates();
-        double pagIbig = deductionRates.getOrDefault("Pag-Ibig", 0.0);
-        double philhealth = deductionRates.getOrDefault("Philhealth", 0.0);
-        double sss = deductionRates.getOrDefault("SSS", 0.0);
-        double cashAdvanceTotal = getCashAdvanceTotal(employeeID); // Corrected method call
-
-        payslipDetails[4] = pagIbig;
-        payslipDetails[5] = philhealth;
-        payslipDetails[6] = sss;
-        payslipDetails[9] = cashAdvanceTotal; // Moved the cash advance total to the correct index
-
-        // Calculate total deductions and net salary
-        double totalDeductions = pagIbig + philhealth + sss + cashAdvanceTotal;
-        payslipDetails[7] = totalDeductions;
-        double netSalary = grossPay - totalDeductions;
-        payslipDetails[8] = netSalary;
-
-        return payslipDetails;
-    }
-
-    private double getCashAdvanceTotal(int employeeID) {
-        double totalCashAdvance = 0.0;
-        try (Connection connection = DatabaseConnector.getConnection()) {
-            String query = "SELECT SUM(Amount) AS TotalAmount FROM Cash_Advance WHERE Employee_ID = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setInt(1, employeeID);
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        totalCashAdvance = resultSet.getDouble("TotalAmount");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error fetching cash advance total: " + e.getMessage());
-        }
-        return totalCashAdvance;
-    }
-
-
-
-
-
-    private String generatePayslipPreview(int employeeID, String employeeName, String jobType, double[] payslipDetails) {
-        StringBuilder payslipPreview = new StringBuilder();
-
-        // Current date handling remains the same
-        long currentTimeMillis = System.currentTimeMillis();
-        Date currentDate = new Date(currentTimeMillis);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = dateFormat.format(currentDate);
-
-        // Building the payslip preview
-        payslipPreview.append("No. ").append(employeeID).append("\n");
-        payslipPreview.append("Date: ").append(formattedDate).append("\n");
-        payslipPreview.append("Name: ").append(employeeName).append("\n");
-        payslipPreview.append("Job Type: ").append(jobType).append("\n\n");
-        payslipPreview.append("\t\tPAY SLIP\n\n");
-
-        payslipPreview.append("Small\t\t\t").append(String.format("%.2f", payslipDetails[0])).append("\n");
-        payslipPreview.append("Medium\t\t\t").append(String.format("%.2f", payslipDetails[1])).append("\n");
-        payslipPreview.append("Large\t\t\t").append(String.format("%.2f", payslipDetails[2])).append("\n");
-        payslipPreview.append(" _______________________________________________________\n");
-        payslipPreview.append("Gross Pay\t\t\t").append(String.format("%.2f", payslipDetails[3])).append("\n");
-        payslipPreview.append(" _______________________________________________________\n\n");
-
-        payslipPreview.append("Deductions\n");
-        payslipPreview.append("Pag-Ibig\t\t\t").append(String.format("%.2f", payslipDetails[4])).append("\n");
-        payslipPreview.append("Philhealth\t\t\t").append(String.format("%.2f", payslipDetails[5])).append("\n");
-        payslipPreview.append("SSS\t\t\t").append(String.format("%.2f", payslipDetails[6])).append("\n\n");
-        payslipPreview.append("Cash Advance\t\t\t").append(String.format("%.2f", payslipDetails[9])).append("\n");
-        payslipPreview.append(" _______________________________________________________\n");
-        payslipPreview.append("Total Deduction\t\t").append(String.format("%.2f", payslipDetails[7])).append("\n");
-        payslipPreview.append(" _______________________________________________________\n\n");
-        payslipPreview.append("Net Salary\t\t\t").append(String.format("%.2f", payslipDetails[8])).append("\n");
-
-        return payslipPreview.toString();
-    }
-
-
-
-    private double getRateFromPackType(String size) {
-        double rate = 0.0;
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DatabaseConnector.getConnection();
-            String query = "SELECT Rate FROM packtype WHERE Size = ?";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, size);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                rate = resultSet.getDouble("Rate");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return rate;
-    }
-
-    private int getQuantityForSize(int employeeID, String size) {
-        int quantity = 0;
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        // Get the current date
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startDateOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate endDateOfWeek = startDateOfWeek.plusDays(6);
-
-        try {
-            connection = DatabaseConnector.getConnection();
-            String query = "SELECT SUM(pd.Quantity) AS TotalQuantity " +
-                    "FROM Piecework_Details pd " +
-                    "JOIN Transaction t ON pd.Transaction_ID = t.Transaction_ID " +
-                    "JOIN PackType pt ON pd.PackType_ID = pt.PackType_ID " +
-                    "WHERE pd.Employee_ID = ? AND pt.Size = ? " +
-                    "AND t.Date BETWEEN ? AND ?";
-            statement = connection.prepareStatement(query);
-            statement.setInt(1, employeeID);
-            statement.setString(2, size);
-            statement.setDate(3, Date.valueOf(startDateOfWeek));
-            statement.setDate(4, Date.valueOf(endDateOfWeek));
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                quantity = resultSet.getInt("TotalQuantity");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return quantity;
-    }
-
-
-
-    private Map<String, Double> fetchDeductionRates() {
-        Map<String, Double> rates = new HashMap<>();
-        String query = "SELECT Deduction_Type, Amount FROM Deduction";
-        try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            while (rs.next()) {
-                String type = rs.getString("Deduction_Type");
-                double amount = rs.getDouble("Amount");
-                rates.put(type, amount);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error fetching deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return rates;
-    }
-
-
-    // Inside the Payslip class
-
-//    private void printEmployee() {
-//        int selectedRow = jTable1.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Please select an employee to print payslip.");
-//            return;
-//        }
-//
-//        String employeeID = jTable1.getValueAt(selectedRow, 0).toString();
-//        // Add logic to print payslip for the selected employee
-//        String payslipPreview = jTextArea1.getText();
-//        createPdfPayslip(employeeID, payslipPreview);
-//    }
-//
-//    private void createPdfPayslip(String employeeID, String payslipContent) {
-//        Document document = new Document();
-//        try {
-//            // Modify this path as needed to save the PDF in a specific location
-//            PdfWriter.getInstance(document, new FileOutputStream("Payslip_" + employeeID + ".pdf"));
-//            document.open();
-//            document.add(new Paragraph(payslipContent));
-//            JOptionPane.showMessageDialog(this, "Payslip PDF created successfully.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "Error creating PDF: " + e.getMessage(), "PDF Creation Error", JOptionPane.ERROR_MESSAGE);
-//        } finally {
-//            document.close();
-//        }
-//    }
-
-
-
 
     // Main method is not required here as it's already implemented in the auto-generated code
 
@@ -975,7 +638,4 @@ public class Payslip extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
-
-
-
 
