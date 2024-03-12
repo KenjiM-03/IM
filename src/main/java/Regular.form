@@ -79,9 +79,9 @@
                               <Component id="Dropdown_EName" alignment="0" pref="294" max="32767" attributes="0"/>
                               <Component id="TField_EmployeeID" alignment="0" max="32767" attributes="0"/>
                               <Component id="TField_timeout" alignment="0" max="32767" attributes="0"/>
-                              <Component id="TField_timeout1" alignment="1" max="32767" attributes="0"/>
+                              <Component id="TField_overtimein" alignment="1" max="32767" attributes="0"/>
                               <Component id="EmployeeID2" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="TField_breakin1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="TField_overtimeout" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -131,11 +131,11 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="EmployeeID2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="TField_timeout1" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="TField_overtimein" min="-2" pref="45" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="EmployeeID6" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="TField_breakin1" min="-2" pref="45" max="-2" attributes="0"/>
+                          <Component id="TField_overtimeout" min="-2" pref="45" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" min="-2" pref="722" max="-2" attributes="0"/>
                   </Group>
@@ -163,6 +163,9 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Employee ID:"/>
           </Properties>
         </Component>
@@ -170,6 +173,9 @@
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Time Out"/>
           </Properties>
@@ -179,6 +185,9 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Employee Name:"/>
           </Properties>
         </Component>
@@ -186,6 +195,9 @@
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Break In"/>
           </Properties>
@@ -195,6 +207,9 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Time In"/>
           </Properties>
         </Component>
@@ -203,10 +218,16 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Break Out"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="TField_EmployeeID">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="Dropdown_EName">
           <Properties>
@@ -279,6 +300,9 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Overtime Time In"/>
           </Properties>
         </Component>
@@ -287,12 +311,15 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="99" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Overtime Time Out"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="TField_timeout1">
+        <Component class="javax.swing.JTextField" name="TField_overtimein">
         </Component>
-        <Component class="javax.swing.JTextField" name="TField_breakin1">
+        <Component class="javax.swing.JTextField" name="TField_overtimeout">
         </Component>
       </SubComponents>
     </Container>

@@ -83,22 +83,22 @@ public class EmployeeCRUD extends javax.swing.JFrame {
             }
         }
     }
-// ============================================================================================
-private void createEmployee() {
-    String employeeName = TField_EmployeeName.getText();
-    String contactNumber = TField_ContactNumber.getText();
-    String gender = (String) Dropdown_Gender.getSelectedItem();
-    String dateOfBirth = TField_DateOfBirth.getText();
-    String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
-    try {
-        Connection connection = DatabaseConnector.getConnection();
-        Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
-        refreshTable();
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
+    // ============================================================================================
+    private void createEmployee() {
+        String employeeName = TField_EmployeeName.getText();
+        String contactNumber = TField_ContactNumber.getText();
+        String gender = (String) Dropdown_Gender.getSelectedItem();
+        String dateOfBirth = TField_DateOfBirth.getText();
+        String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
+        try {
+            Connection connection = DatabaseConnector.getConnection();
+            Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
+            refreshTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
+        }
     }
-}
 
     private void updateEmployee() {
         try {
@@ -271,31 +271,39 @@ private void createEmployee() {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        EmployeeName.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeName.setText("Employee Name:");
 
         Contactnumber.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        Contactnumber.setForeground(new java.awt.Color(153, 255, 255));
         Contactnumber.setText("Contact Number:");
 
         Gender.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        Gender.setForeground(new java.awt.Color(153, 255, 255));
         Gender.setText("Gender:");
 
         DateOfBirth.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        DateOfBirth.setForeground(new java.awt.Color(153, 255, 255));
         DateOfBirth.setText("Date of Birth (YYYY-MM-DD):");
 
         JobType.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        JobType.setForeground(new java.awt.Color(153, 255, 255));
         JobType.setText("Job Type:");
 
-        Dropdown_Gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female"}));
+        TField_EmployeeID.setEditable(false);
+
+        Dropdown_Gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         Dropdown_Gender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Dropdown_GenderActionPerformed(evt);
             }
         });
 
-        Dropdown_JobType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "regular", "piecework" }));
+        Dropdown_JobType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         Button_update.setText("Update");
         Button_update.addActionListener(new java.awt.event.ActionListener() {
@@ -323,11 +331,6 @@ private void createEmployee() {
 
         Button_delete.setBackground(new java.awt.Color(51, 0, 0));
         Button_delete.setText("Delete");
-        Button_delete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_deleteActionPerformed(evt);
-            }
-        });
 
         Button_add.setText("Add");
         Button_add.addActionListener(new java.awt.event.ActionListener() {
@@ -453,7 +456,6 @@ private void createEmployee() {
     }//GEN-LAST:event_Button_addActionPerformed
 
     private void Dropdown_GenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Dropdown_GenderActionPerformed
-        Dropdown_Gender.setModel(new DefaultComboBoxModel<>(new String[]{"Male", "Female", "Other"}));
     }//GEN-LAST:event_Dropdown_GenderActionPerformed
 
     private void Button_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_deleteActionPerformed
@@ -467,7 +469,7 @@ private void createEmployee() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
