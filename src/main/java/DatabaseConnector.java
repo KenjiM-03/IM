@@ -6,7 +6,7 @@ public class DatabaseConnector {
 
     private static final String URL = "jdbc:mysql://localhost:3306/GEI";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "P4ssw0rd";
 
     static {
         try {
