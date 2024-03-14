@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
@@ -288,7 +289,8 @@ public class Payslip extends javax.swing.JFrame {
 
         // Print the payslip as a PDF
         try {
-            String fileName = "Payslip_" + employeeID + ".pdf";
+            // Generate unique file name based on employee ID, current date, and current time
+            String fileName = generateFileName(employeeID);
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(fileName));
             document.open();
@@ -318,7 +320,8 @@ public class Payslip extends javax.swing.JFrame {
 
             // Print the payslip as a PDF
             try {
-                String fileName = "Payslip_" + employeeID + ".pdf";
+                // Generate unique file name based on employee ID, current date, and current time
+                String fileName = generateFileName(employeeID);
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(fileName));
                 document.open();
@@ -337,6 +340,14 @@ public class Payslip extends javax.swing.JFrame {
             }
         }
     }
+
+    private String generateFileName(String employeeID) {
+        String currentDate = new SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
+        String currentTime = new SimpleDateFormat("HH:mm").format(new java.util.Date());
+        return employeeID + "-" + currentDate + "-" + currentTime + ".pdf";
+    }
+
+
 
 
     private void resetEmployeeData(int employeeID) {
