@@ -21,6 +21,8 @@ public class PayFactors extends javax.swing.JFrame {
     public PayFactors() {
         initComponents();
         loadCurrentRates();
+        loadDeductionRates();
+        initButtonListeners();
     }
 
     private void loadCurrentRates() {
@@ -80,6 +82,67 @@ public class PayFactors extends javax.swing.JFrame {
         }
     }
 
+    private void loadDeductionRates() {
+        try (Connection conn = DatabaseConnector.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT Deduction_Type, Amount FROM Deduction")) {
+
+            while (rs.next()) {
+                String type = rs.getString("Deduction_Type");
+                float amount = rs.getFloat("Amount");
+
+                switch (type) {
+                    case "Pag-Ibig":
+                        TField_pagibig.setText(String.valueOf(amount));
+                        break;
+                    case "Philhealth":
+                        TField_philhealth.setText(String.valueOf(amount));
+                        break;
+                    case "SSS":
+                        TField_sss.setText(String.valueOf(amount));
+                        break;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void updateDeductionRates() {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            updateDeductionRate(conn, "Pag-Ibig", Float.parseFloat(TField_pagibig.getText()));
+            updateDeductionRate(conn, "Philhealth", Float.parseFloat(TField_philhealth.getText()));
+            updateDeductionRate(conn, "SSS", Float.parseFloat(TField_sss.getText()));
+
+            JOptionPane.showMessageDialog(this, "Deduction rates updated successfully.", "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter valid numbers for deduction rates.", "Input Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void updateDeductionRate(Connection conn, String type, float amount) throws SQLException {
+        String updateQuery = "UPDATE Deduction SET Amount = ? WHERE Deduction_Type = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
+            pstmt.setFloat(1, amount);
+            pstmt.setString(2, type);
+            pstmt.executeUpdate();
+        }
+    }
+
+    private void initButtonListeners() {
+        Button_update2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateDeductionRates();
+            }
+        });
+        // Initialize other listeners
+    }
 
 
     /**
@@ -146,12 +209,12 @@ public class PayFactors extends javax.swing.JFrame {
         //======== jPanel1 ========
         {
             jPanel1.setBackground(new Color(0x003333));
-            jPanel1.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border
-            .EmptyBorder(0,0,0,0), "JFor\u006dDesi\u0067ner \u0045valu\u0061tion",javax.swing.border.TitledBorder.CENTER,javax
-            .swing.border.TitledBorder.BOTTOM,new java.awt.Font("Dia\u006cog",java.awt.Font.BOLD,
-            12),java.awt.Color.red),jPanel1. getBorder()));jPanel1. addPropertyChangeListener(new java.beans
-            .PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("bord\u0065r".equals(e.
-            getPropertyName()))throw new RuntimeException();}});
+            jPanel1.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
+            ( 0, 0 ,0 , 0) ,  "JF\u006frmDesi\u0067ner Ev\u0061luatio\u006e" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
+            .TitledBorder . BOTTOM, new java. awt .Font ( "Dialo\u0067", java .awt . Font. BOLD ,12 ) ,java . awt
+            . Color .red ) ,jPanel1. getBorder () ) ); jPanel1. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
+            propertyChange (java . beans. PropertyChangeEvent e) { if( "borde\u0072" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
+            ;} } );
 
             //---- jLabel2 ----
             jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -318,7 +381,6 @@ public class PayFactors extends javax.swing.JFrame {
 
             //---- Button_update ----
             Button_update.setText("Update");
-            Button_update.addActionListener(e -> updateRates());
 
             //---- Button_cancel ----
             Button_cancel.setText("Cancel");
