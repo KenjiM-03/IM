@@ -16,7 +16,7 @@ public class AdminSignIn extends javax.swing.JFrame {
         String selectedAdminName = (String) DropDown_ChoosingAdmin.getSelectedItem();
         int adminId = -1;
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin WHERE Admin_Name = ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin WHERE Admin = ?")) {
 
             stmt.setString(1, selectedAdminName);
             ResultSet rs = stmt.executeQuery();
@@ -48,7 +48,8 @@ public class AdminSignIn extends javax.swing.JFrame {
         // Connect to the database and populate the ComboBox
         try (Connection conn = DatabaseConnector.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT Admin_Name FROM Admin")) {
+             ResultSet rs = stmt.executeQuery("SELECT Admin" +
+                     " FROM Admin")) {
 
             while (rs.next()) {
                 DropDown_ChoosingAdmin.addItem(rs.getString("Admin_Name"));

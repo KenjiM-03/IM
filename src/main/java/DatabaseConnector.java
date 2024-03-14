@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 public class DatabaseConnector {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/db_im";
+    private static final String URL = "jdbc:mysql://localhost:3306/gei_d";
     private static final String USER = "root";
-    private static final String PASSWORD = "P4ssw0rd";
+    private static final String PASSWORD = "";
 
     static {
         try {
