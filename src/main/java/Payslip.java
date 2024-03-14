@@ -9,6 +9,7 @@
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,10 +25,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Locale;
 
-//import com.itextpdf.text.Document;
-//import com.itextpdf.text.Paragraph;
-//import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 
 public class Payslip extends javax.swing.JFrame {
@@ -243,24 +248,6 @@ public class Payslip extends javax.swing.JFrame {
         return rowCount + 1; // Simply increment the row count for demonstration, in practice, you'd use a more robust method to generate unique IDs
     }
 
-
-    private void printEmployee() {
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select an employee to print payslip.");
-            return;
-        }
-
-        String employeeID = jTable1.getValueAt(selectedRow, 0).toString();
-        // Add logic to print payslip for the selected employee
-        JOptionPane.showMessageDialog(this, "Printing payslip for Employee ID: " + employeeID);
-    }
-
-    private void printAllEmployees() {
-        // Add logic to print all employees' payslips
-    }
-
-
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
         // Get the selected row index
         int rowIndex = jTable1.getSelectedRow();
@@ -285,6 +272,65 @@ public class Payslip extends javax.swing.JFrame {
             jTextArea1.setText(payslipPreview);
         }
     }
+
+    private void printEmployee() {
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an employee to print payslip.");
+            return;
+        }
+
+        String employeeID = jTable1.getValueAt(selectedRow, 0).toString();
+        String employeeName = jTable1.getValueAt(selectedRow, 1).toString();
+        String jobType = jTable1.getValueAt(selectedRow, 2).toString();
+        double[] payslipDetails = calculatePayslip(Integer.parseInt(employeeID));
+        String payslipPreview = generatePayslipPreview(Integer.parseInt(employeeID), employeeName, jobType, payslipDetails);
+
+        // Print the payslip as a PDF
+        try {
+            String fileName = "Payslip_" + employeeID + ".pdf";
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+
+            // Add content to the PDF
+            document.add(new Paragraph(payslipPreview));
+
+            document.close();
+            JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
+        } catch (FileNotFoundException | DocumentException e) {
+            JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void printAllEmployees() {
+        // Iterate through each row of the jTable
+        for (int row = 0; row < jTable1.getRowCount(); row++) {
+            String employeeID = jTable1.getValueAt(row, 0).toString();
+            String employeeName = jTable1.getValueAt(row, 1).toString();
+            String jobType = jTable1.getValueAt(row, 2).toString();
+            double[] payslipDetails = calculatePayslip(Integer.parseInt(employeeID));
+            String payslipPreview = generatePayslipPreview(Integer.parseInt(employeeID), employeeName, jobType, payslipDetails);
+
+            // Print the payslip as a PDF
+            try {
+                String fileName = "Payslip_" + employeeID + ".pdf";
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(fileName));
+                document.open();
+
+                // Add content to the PDF
+                document.add(new Paragraph(payslipPreview));
+
+                document.close();
+                JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
+            } catch (FileNotFoundException | DocumentException e) {
+                JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+
 
 
     private double[] calculatePayslip(int employeeID) {
@@ -502,6 +548,37 @@ public class Payslip extends javax.swing.JFrame {
         return rates;
     }
 
+
+    // Inside the Payslip class
+
+//    private void printEmployee() {
+//        int selectedRow = jTable1.getSelectedRow();
+//        if (selectedRow == -1) {
+//            JOptionPane.showMessageDialog(this, "Please select an employee to print payslip.");
+//            return;
+//        }
+//
+//        String employeeID = jTable1.getValueAt(selectedRow, 0).toString();
+//        // Add logic to print payslip for the selected employee
+//        String payslipPreview = jTextArea1.getText();
+//        createPdfPayslip(employeeID, payslipPreview);
+//    }
+//
+//    private void createPdfPayslip(String employeeID, String payslipContent) {
+//        Document document = new Document();
+//        try {
+//            // Modify this path as needed to save the PDF in a specific location
+//            PdfWriter.getInstance(document, new FileOutputStream("Payslip_" + employeeID + ".pdf"));
+//            document.open();
+//            document.add(new Paragraph(payslipContent));
+//            JOptionPane.showMessageDialog(this, "Payslip PDF created successfully.");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(this, "Error creating PDF: " + e.getMessage(), "PDF Creation Error", JOptionPane.ERROR_MESSAGE);
+//        } finally {
+//            document.close();
+//        }
+//    }
 
 
 
