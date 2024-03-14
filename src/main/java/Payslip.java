@@ -298,6 +298,10 @@ public class Payslip extends javax.swing.JFrame {
 
             document.close();
             JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
+
+            // Reset employee data after printing payslip
+            resetEmployeeData(Integer.parseInt(employeeID)); // Call resetEmployeeData method here
+
         } catch (FileNotFoundException | DocumentException e) {
             JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -324,11 +328,49 @@ public class Payslip extends javax.swing.JFrame {
 
                 document.close();
                 JOptionPane.showMessageDialog(this, "Payslip printed successfully. File saved as " + fileName);
+
+                // Reset employee data after printing payslip
+                resetEmployeeData(Integer.parseInt(employeeID)); // Call resetEmployeeData method here
+
             } catch (FileNotFoundException | DocumentException e) {
                 JOptionPane.showMessageDialog(this, "Error printing payslip: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
+
+    private void resetEmployeeData(int employeeID) {
+        try (Connection connection = DatabaseConnector.getConnection()) {
+            // Delete records for small, medium, and large sizes in Piecework_Details
+            String deleteQuery = "DELETE FROM Piecework_Details WHERE Employee_ID = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+                preparedStatement.setInt(1, employeeID);
+                preparedStatement.executeUpdate();
+            }
+
+            // Delete cash advance record
+            deleteQuery = "DELETE FROM Cash_Advance WHERE Employee_ID = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+                preparedStatement.setInt(1, employeeID);
+                preparedStatement.executeUpdate();
+            }
+
+            // Delete deductions associated with the employee's payslips
+            deleteQuery = "DELETE FROM Deduction WHERE PaySlip_ID IN (SELECT PaySlip_ID FROM PaySlip WHERE DTR_ID IN " +
+                    "(SELECT DTR_ID FROM DTR WHERE Employee_ID = ?))";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+                preparedStatement.setInt(1, employeeID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error resetting employee data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+
+
+
 
 
 
