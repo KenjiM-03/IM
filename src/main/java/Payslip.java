@@ -7,11 +7,6 @@
  */
 
 import javax.swing.table.DefaultTableModel;
-
-/**
- *
- * @author keo
- */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -22,19 +17,18 @@ import java.text.SimpleDateFormat;
 
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+//import com.itextpdf.text.Document;
+//import com.itextpdf.text.Paragraph;
+//import com.itextpdf.text.pdf.PdfWriter;
+
 
 public class Payslip extends javax.swing.JFrame {
 
@@ -294,7 +288,7 @@ public class Payslip extends javax.swing.JFrame {
 
 
     private double[] calculatePayslip(int employeeID) {
-        double[] payslipDetails = new double[5]; // Increase the size to accommodate gross pay and deductions
+        double[] payslipDetails = new double[11]; // Increased the size to accommodate gross pay, deductions, and cash advances
         // Query the packtype table to get the rate for each size
         double rateSmall = getRateFromPackType("Small");
         double rateMedium = getRateFromPackType("Medium");
@@ -319,56 +313,85 @@ public class Payslip extends javax.swing.JFrame {
         double grossPay = totalSmall + totalMedium + totalLarge;
         payslipDetails[3] = grossPay;
 
-        // Calculate deductions (e.g., Pag ibig)
-        double pagIbig = calculatePagIbig(employeeID); // Assuming a method to calculate Pag ibig deduction
+        // Assuming you're fetching the deduction rates and calculating them...
+        Map<String, Double> deductionRates = fetchDeductionRates();
+        double pagIbig = deductionRates.getOrDefault("Pag-Ibig", 0.0);
+        double philhealth = deductionRates.getOrDefault("Philhealth", 0.0);
+        double sss = deductionRates.getOrDefault("SSS", 0.0);
+        double cashAdvanceTotal = getCashAdvanceTotal(employeeID); // Corrected method call
+
         payslipDetails[4] = pagIbig;
+        payslipDetails[5] = philhealth;
+        payslipDetails[6] = sss;
+        payslipDetails[9] = cashAdvanceTotal; // Moved the cash advance total to the correct index
+
+        // Calculate total deductions and net salary
+        double totalDeductions = pagIbig + philhealth + sss + cashAdvanceTotal;
+        payslipDetails[7] = totalDeductions;
+        double netSalary = grossPay - totalDeductions;
+        payslipDetails[8] = netSalary;
 
         return payslipDetails;
     }
 
-    private double calculatePagIbig(int employeeID) {
-        // Implement your logic to calculate Pag ibig deduction here
-        // This is just a placeholder method, replace it with your actual implementation
-        return 0.0; // Placeholder return value
+    private double getCashAdvanceTotal(int employeeID) {
+        double totalCashAdvance = 0.0;
+        try (Connection connection = DatabaseConnector.getConnection()) {
+            String query = "SELECT SUM(Amount) AS TotalAmount FROM Cash_Advance WHERE Employee_ID = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, employeeID);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        totalCashAdvance = resultSet.getDouble("TotalAmount");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error fetching cash advance total: " + e.getMessage());
+        }
+        return totalCashAdvance;
     }
+
+
 
 
 
     private String generatePayslipPreview(int employeeID, String employeeName, String jobType, double[] payslipDetails) {
         StringBuilder payslipPreview = new StringBuilder();
 
-        // Get current date
-        // Get the current time in milliseconds
+        // Current date handling remains the same
         long currentTimeMillis = System.currentTimeMillis();
-
-        // Create a java.sql.Date object using the current time in milliseconds
         Date currentDate = new Date(currentTimeMillis);
-
-        // Format the date
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(currentDate);
 
-        // Append payslip details to the preview
+        // Building the payslip preview
         payslipPreview.append("No. ").append(employeeID).append("\n");
         payslipPreview.append("Date: ").append(formattedDate).append("\n");
-        payslipPreview.append("Name: ").append(employeeName).append("\n\n");
+        payslipPreview.append("Name: ").append(employeeName).append("\n");
+        payslipPreview.append("Job Type: ").append(jobType).append("\n\n");
         payslipPreview.append("\t\tPAY SLIP\n\n");
-        payslipPreview.append(" _______________________________________________________\n");
+
         payslipPreview.append("Small\t\t\t").append(String.format("%.2f", payslipDetails[0])).append("\n");
         payslipPreview.append("Medium\t\t\t").append(String.format("%.2f", payslipDetails[1])).append("\n");
         payslipPreview.append("Large\t\t\t").append(String.format("%.2f", payslipDetails[2])).append("\n");
         payslipPreview.append(" _______________________________________________________\n");
-        payslipPreview.append("Gross Pay\t\t\t").append(String.format("%.2f", payslipDetails[3])).append("\n\n");
+        payslipPreview.append("Gross Pay\t\t\t").append(String.format("%.2f", payslipDetails[3])).append("\n");
+        payslipPreview.append(" _______________________________________________________\n\n");
+
         payslipPreview.append("Deductions\n");
-        payslipPreview.append("Pag ibig\t\t\t").append(String.format("%.2f", payslipDetails[4])).append("\n");
-        // Add more deductions as needed
-        double totalDeduction = payslipDetails[4]; // Sum of all deductions
-        payslipPreview.append("Total Deduction\t\t").append(String.format("%.2f", totalDeduction)).append("\n\n");
-        double netSalary = payslipDetails[3] - totalDeduction; // Gross Pay - Total Deductions
-        payslipPreview.append("Net Salary\t\t\t").append(String.format("%.2f", netSalary)).append("\n");
+        payslipPreview.append("Pag-Ibig\t\t\t").append(String.format("%.2f", payslipDetails[4])).append("\n");
+        payslipPreview.append("Philhealth\t\t\t").append(String.format("%.2f", payslipDetails[5])).append("\n");
+        payslipPreview.append("SSS\t\t\t").append(String.format("%.2f", payslipDetails[6])).append("\n\n");
+        payslipPreview.append("Cash Advance\t\t\t").append(String.format("%.2f", payslipDetails[9])).append("\n");
+        payslipPreview.append(" _______________________________________________________\n");
+        payslipPreview.append("Total Deduction\t\t").append(String.format("%.2f", payslipDetails[7])).append("\n");
+        payslipPreview.append(" _______________________________________________________\n\n");
+        payslipPreview.append("Net Salary\t\t\t").append(String.format("%.2f", payslipDetails[8])).append("\n");
 
         return payslipPreview.toString();
     }
+
 
 
     private double getRateFromPackType(String size) {
@@ -456,6 +479,27 @@ public class Payslip extends javax.swing.JFrame {
         }
 
         return quantity;
+    }
+
+
+
+    private Map<String, Double> fetchDeductionRates() {
+        Map<String, Double> rates = new HashMap<>();
+        String query = "SELECT Deduction_Type, Amount FROM Deduction";
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String type = rs.getString("Deduction_Type");
+                double amount = rs.getDouble("Amount");
+                rates.put(type, amount);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error fetching deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return rates;
     }
 
 

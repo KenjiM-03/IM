@@ -21,6 +21,8 @@ public class PayFactors extends javax.swing.JFrame {
     public PayFactors() {
         initComponents();
         loadCurrentRates();
+        loadDeductionRates();
+        initButtonListeners();
     }
 
     private void loadCurrentRates() {
@@ -80,6 +82,67 @@ public class PayFactors extends javax.swing.JFrame {
         }
     }
 
+    private void loadDeductionRates() {
+        try (Connection conn = DatabaseConnector.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT Deduction_Type, Amount FROM Deduction")) {
+
+            while (rs.next()) {
+                String type = rs.getString("Deduction_Type");
+                float amount = rs.getFloat("Amount");
+
+                switch (type) {
+                    case "Pag-Ibig":
+                        TField_pagibig.setText(String.valueOf(amount));
+                        break;
+                    case "Philhealth":
+                        TField_philhealth.setText(String.valueOf(amount));
+                        break;
+                    case "SSS":
+                        TField_sss.setText(String.valueOf(amount));
+                        break;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void updateDeductionRates() {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            updateDeductionRate(conn, "Pag-Ibig", Float.parseFloat(TField_pagibig.getText()));
+            updateDeductionRate(conn, "Philhealth", Float.parseFloat(TField_philhealth.getText()));
+            updateDeductionRate(conn, "SSS", Float.parseFloat(TField_sss.getText()));
+
+            JOptionPane.showMessageDialog(this, "Deduction rates updated successfully.", "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating deduction rates.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter valid numbers for deduction rates.", "Input Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void updateDeductionRate(Connection conn, String type, float amount) throws SQLException {
+        String updateQuery = "UPDATE Deduction SET Amount = ? WHERE Deduction_Type = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
+            pstmt.setFloat(1, amount);
+            pstmt.setString(2, type);
+            pstmt.executeUpdate();
+        }
+    }
+
+    private void initButtonListeners() {
+        Button_update2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateDeductionRates();
+            }
+        });
+        // Initialize other listeners
+    }
 
 
     /**
