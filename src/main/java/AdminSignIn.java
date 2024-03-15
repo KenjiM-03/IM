@@ -6,7 +6,6 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author keo
@@ -149,8 +148,8 @@ public class AdminSignIn extends javax.swing.JFrame {
 
             if (rs.next()) {
                 int adminId = rs.getInt("Admin_ID");
-                recordAttendance(adminId);
-                // Redirect to the dashboard after recording attendance
+                recordTransaction(adminId);
+                // Redirect to the dashboard after recording transaction
                 redirectToDashboard();
             } else {
                 JOptionPane.showMessageDialog(this, "Admin not found.", "Login Error", JOptionPane.ERROR_MESSAGE);
@@ -164,27 +163,28 @@ public class AdminSignIn extends javax.swing.JFrame {
         InstructionsKt.redirectToDashboard(this);
     }
 
-    private void recordAttendance(int adminId) {
+    private void recordTransaction(int adminId) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDate = dateFormat.format(new Date());
 
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("INSERT INTO Attendance (Date, Admin_ID) VALUES (?, ?)")) {
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO Transaction (Date, Admin_ID) VALUES (?, ?)")) {
 
             stmt.setString(1, currentDate);
             stmt.setInt(2, adminId);
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows > 0) {
-                JOptionPane.showMessageDialog(this, "Attendance recorded.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Transaction recorded.", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to record attendance.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to record transaction.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error recording attendance: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error recording transaction: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     /**
      * @param args the command line arguments
      */

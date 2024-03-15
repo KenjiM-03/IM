@@ -227,6 +227,107 @@
 
 
 
+            // Method to populate text fields from selected row in JTable
+            private void populateFieldsFromTable() {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow != -1) { // Check if a row is selected
+                    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                    TField_EmployeeID.setText(model.getValueAt(selectedRow, 0).toString());
+                    // Populate other text fields similarly with the corresponding column values
+                }
+            }
+
+            // Method to clear text fields
+            // Method to clear text fields
+            private void clearFields() {
+                TField_EmployeeID.setText("");
+                TField_Quantity.setText("");
+                Dropdown_EName.setSelectedIndex(-1);
+                Dropdown_Size.setSelectedIndex(-1);
+            }
+
+            // Method to update piecework details
+            private void updatePiecework() {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(this, "Please select a piecework to update.");
+                    return;
+                }
+
+                int employeeId = Integer.parseInt(TField_EmployeeID.getText().trim());
+                String size = jTable1.getValueAt(selectedRow, 2).toString();
+                int quantity = Integer.parseInt(TField_Quantity.getText().trim());
+                int transactionId = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
+
+                try {
+                    Connection connection = DatabaseConnector.getConnection();
+                    String packTypeIdQuery = "SELECT PackType_ID FROM PackType WHERE Size = ?";
+                    try (PreparedStatement packTypeStatement = connection.prepareStatement(packTypeIdQuery)) {
+                        packTypeStatement.setString(1, size);
+                        ResultSet resultSet = packTypeStatement.executeQuery();
+                        int packTypeId = -1;
+                        if (resultSet.next()) {
+                            packTypeId = resultSet.getInt("PackType_ID");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Size not found in the PackType table.");
+                            return;
+                        }
+
+                        String query = "UPDATE Piecework_Details SET PackType_ID = ?, Quantity = ? WHERE Employee_ID = ? AND Transaction_ID = ?";
+                        try (PreparedStatement statement = connection.prepareStatement(query)) {
+                            statement.setInt(1, packTypeId);
+                            statement.setInt(2, quantity);
+                            statement.setInt(3, employeeId);
+                            statement.setInt(4, transactionId);
+                            int rowsAffected = statement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                JOptionPane.showMessageDialog(this, "Piecework updated successfully!");
+                                loadPieceworkDetails();
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Piecework not found for the specified Employee ID and Transaction ID.");
+                            }
+                        }
+                    }
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(this, "Please enter valid numeric values for Quantity.");
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Error updating piecework: " + e.getMessage());
+                }
+            }
+
+
+
+            private void deletePiecework() {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(this, "Please select a piecework to delete.");
+                    return;
+                }
+
+                int employeeId = Integer.parseInt(TField_EmployeeID.getText().trim());
+                int transactionId = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
+
+                try {
+                    Connection connection = DatabaseConnector.getConnection();
+                    String query = "DELETE FROM Piecework_Details WHERE Employee_ID = ? AND Transaction_ID = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(query)) {
+                        statement.setInt(1, employeeId);
+                        statement.setInt(2, transactionId);
+                        int rowsAffected = statement.executeUpdate();
+                        if (rowsAffected > 0) {
+                            JOptionPane.showMessageDialog(this, "Piecework deleted successfully!");
+                            loadPieceworkDetails();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Piecework not found for the specified Employee ID and Transaction ID.");
+                        }
+                    }
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Error deleting piecework: " + e.getMessage());
+                }
+            }
+
+
+
 
 
             //===========================================================================================
@@ -239,6 +340,27 @@
                 populateEmployeeDropdown();
                 populateSizeDropdown();
                 TField_EmployeeID.setEditable(false);
+
+                Button_update.addActionListener(e -> updatePiecework());
+                Button_clear.addActionListener(e -> clearFields());
+                Button_delete.addActionListener(e -> deletePiecework());
+
+                // Add this line in the constructor to attach a ListSelectionListener to jTable1
+                jTable1.getSelectionModel().addListSelectionListener(e -> {
+                    if (!e.getValueIsAdjusting()) {
+                        int selectedRow = jTable1.getSelectedRow();
+                        if (selectedRow != -1) {
+                            // Read data from the selected row and populate the fields
+                            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                            TField_EmployeeID.setText(String.valueOf(model.getValueAt(selectedRow, 0)));
+                            Dropdown_EName.setSelectedItem(model.getValueAt(selectedRow, 1));
+                            Dropdown_Size.setSelectedItem(model.getValueAt(selectedRow, 2));
+                            TField_Quantity.setText(String.valueOf(model.getValueAt(selectedRow, 3)));
+                        }
+                    }
+                });
+
+
 
 
             }

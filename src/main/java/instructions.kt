@@ -109,11 +109,6 @@ fun redirectToPiecework(currentWindow: JFrame) {
     currentWindow.dispose()
 }
 
-fun redirectToRegular(currentWindow: JFrame) {
-    val regularForm = Regular()
-    regularForm.isVisible = true
-    currentWindow.dispose()
-}
 
 fun redirectToPayFactor(currentWindow: JFrame) {
     val payFactorForm = PayFactors()

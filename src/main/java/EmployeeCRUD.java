@@ -18,6 +18,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 
 /**
@@ -43,12 +47,12 @@ public class EmployeeCRUD extends javax.swing.JFrame {
             return;
         }
         try {
-            // SQL query to join employees with piecework or regular table based on Job Type
+// SQL query to join employees with piecework table based on Job Type
             String query = "SELECT e.Employee_ID, e.Employee_Name, e.Contact_Number, e.Gender, e.Date_of_Birth, "
-                    + "CASE WHEN p.Job_Type_Description IS NOT NULL THEN p.Job_Type_Description ELSE r.Job_Type_Description END AS Job_Type "
+                    + "p.Job_Type_Description AS Job_Type "
                     + "FROM employees e "
-                    + "LEFT JOIN piecework p ON e.Employee_ID = p.Employee_ID "
-                    + "LEFT JOIN regular r ON e.Employee_ID = r.Employee_ID";
+                    + "LEFT JOIN piecework p ON e.Employee_ID = p.Employee_ID";
+
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -83,22 +87,22 @@ public class EmployeeCRUD extends javax.swing.JFrame {
             }
         }
     }
-    // ============================================================================================
-    private void createEmployee() {
-        String employeeName = TField_EmployeeName.getText();
-        String contactNumber = TField_ContactNumber.getText();
-        String gender = (String) Dropdown_Gender.getSelectedItem();
-        String dateOfBirth = TField_DateOfBirth.getText();
-        String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
-        try {
-            Connection connection = DatabaseConnector.getConnection();
-            Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
-            refreshTable();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
-        }
+// ============================================================================================
+private void createEmployee() {
+    String employeeName = TField_EmployeeName.getText();
+    String contactNumber = TField_ContactNumber.getText();
+    String gender = (String) Dropdown_Gender.getSelectedItem();
+    String dateOfBirth = TField_DateOfBirth.getText();
+    String jobTypeDescription = (String) Dropdown_JobType.getSelectedItem();
+    try {
+        Connection connection = DatabaseConnector.getConnection();
+        Employee.insertEmployee(connection, employeeName, contactNumber, gender, dateOfBirth, jobTypeDescription);
+        refreshTable();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error creating employee: " + e.getMessage());
     }
+}
 
     private void updateEmployee() {
         try {
@@ -175,17 +179,25 @@ public class EmployeeCRUD extends javax.swing.JFrame {
 
     private void deleteEmployee() {
         try {
-            int employeeId = Integer.parseInt(TField_EmployeeID.getText());
+            // Retrieve the employee ID from the JTextField
+            int employeeId = Integer.parseInt(TField_EmployeeID.getText().trim());
+
+            // Perform the deletion operation in the database
             Connection connection = DatabaseConnector.getConnection();
-            Employee.deleteEmployee(connection, employeeId);
+            Employee.deleteEmployee(connection, employeeId); // Assuming deleteEmployee method is implemented correctly
+
+            // Display a success message and refresh the table
             JOptionPane.showMessageDialog(this, "Employee deleted successfully!");
             refreshTable();
         } catch (NumberFormatException nfe) {
+            // Handle invalid employee ID input
             JOptionPane.showMessageDialog(this, "Please enter a valid Employee ID.");
         } catch (SQLException e) {
+            // Handle SQL exception
             JOptionPane.showMessageDialog(this, "Error deleting employee: " + e.getMessage());
         }
     }
+
 
     private void clearForm() {
         TField_EmployeeID.setText("");
@@ -202,6 +214,38 @@ public class EmployeeCRUD extends javax.swing.JFrame {
         loadEmployeeDataFromDatabase();
     }
 
+    class NumberOnlyFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (string == null) return;
+
+            StringBuilder sb = new StringBuilder(string);
+            for (int i = sb.length() - 1; i >= 0; i--) {
+                char c = sb.charAt(i);
+                if (!Character.isDigit(c)) {
+                    sb.deleteCharAt(i);
+                }
+            }
+
+            super.insertString(fb, offset, sb.toString(), attr);
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (text == null) return;
+
+            StringBuilder sb = new StringBuilder(text);
+            for (int i = sb.length() - 1; i >= 0; i--) {
+                char c = sb.charAt(i);
+                if (!Character.isDigit(c)) {
+                    sb.deleteCharAt(i);
+                }
+            }
+
+            super.replace(fb, offset, length, sb.toString(), attrs);
+        }
+    }
+
 
 //==========================================================================================
 
@@ -212,6 +256,11 @@ public class EmployeeCRUD extends javax.swing.JFrame {
     public EmployeeCRUD() {
         initComponents();
         loadEmployeeDataFromDatabase();
+
+        // Create and set the document filter for the contact number text field
+        ((AbstractDocument) TField_ContactNumber.getDocument()).setDocumentFilter(new NumberOnlyFilter());
+
+
 
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -271,39 +320,31 @@ public class EmployeeCRUD extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 51, 51));
 
         EmployeeID.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        EmployeeID.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeID.setText("Employee ID:");
 
         EmployeeName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        EmployeeName.setForeground(new java.awt.Color(153, 255, 255));
         EmployeeName.setText("Employee Name:");
 
         Contactnumber.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        Contactnumber.setForeground(new java.awt.Color(153, 255, 255));
         Contactnumber.setText("Contact Number:");
 
         Gender.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        Gender.setForeground(new java.awt.Color(153, 255, 255));
         Gender.setText("Gender:");
 
         DateOfBirth.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        DateOfBirth.setForeground(new java.awt.Color(153, 255, 255));
         DateOfBirth.setText("Date of Birth (YYYY-MM-DD):");
 
         JobType.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        JobType.setForeground(new java.awt.Color(153, 255, 255));
         JobType.setText("Job Type:");
 
-        TField_EmployeeID.setEditable(false);
-
-        Dropdown_Gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Dropdown_Gender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female"}));
         Dropdown_Gender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Dropdown_GenderActionPerformed(evt);
             }
         });
 
-        Dropdown_JobType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Dropdown_JobType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "piecework" }));
 
         Button_update.setText("Update");
         Button_update.addActionListener(new java.awt.event.ActionListener() {
@@ -331,6 +372,11 @@ public class EmployeeCRUD extends javax.swing.JFrame {
 
         Button_delete.setBackground(new java.awt.Color(51, 0, 0));
         Button_delete.setText("Delete");
+        Button_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Button_deleteActionPerformed(evt);
+            }
+        });
 
         Button_add.setText("Add");
         Button_add.addActionListener(new java.awt.event.ActionListener() {

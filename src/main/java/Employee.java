@@ -89,9 +89,6 @@ public class Employee {
 
     public static void deleteEmployee(Connection connection, int employeeId) {
         try {
-            if (isTableExists(connection, "Regular")) {
-                deleteJobType(connection, employeeId, "Regular");
-            }
 
             if (isTableExists(connection, "Piecework")) {
                 deleteJobType(connection, employeeId, "Piecework");
