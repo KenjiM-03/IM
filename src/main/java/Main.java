@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         try (Connection connection = DatabaseConnector.getConnection()) {
-            EmployeeRegistration.mainMenu(connection);
+            //EmployeeRegistration.mainMenu(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
