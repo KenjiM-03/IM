@@ -6,6 +6,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author keo
@@ -16,7 +17,7 @@ public class AdminSignIn extends javax.swing.JFrame {
         String selectedAdminName = (String) DropDown_ChoosingAdmin.getSelectedItem();
         int adminId = -1;
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin WHERE Admin = ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin_Info WHERE Admin_Name = ?")) {
 
             stmt.setString(1, selectedAdminName);
             ResultSet rs = stmt.executeQuery();
@@ -48,8 +49,7 @@ public class AdminSignIn extends javax.swing.JFrame {
         // Connect to the database and populate the ComboBox
         try (Connection conn = DatabaseConnector.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT Admin" +
-                     " FROM Admin")) {
+             ResultSet rs = stmt.executeQuery("SELECT Admin_Name FROM Admin_Info")) {
 
             while (rs.next()) {
                 DropDown_ChoosingAdmin.addItem(rs.getString("Admin_Name"));
@@ -142,15 +142,15 @@ public class AdminSignIn extends javax.swing.JFrame {
         }
 
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin WHERE Admin_Name = ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT Admin_ID FROM Admin_Info WHERE Admin_Name = ?")) {
 
             stmt.setString(1, selectedAdminName);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 int adminId = rs.getInt("Admin_ID");
-                recordTransaction(adminId);
-                // Redirect to the dashboard after recording transaction
+                recordAttendance(adminId);
+                // Redirect to the dashboard after recording attendance
                 redirectToDashboard();
             } else {
                 JOptionPane.showMessageDialog(this, "Admin not found.", "Login Error", JOptionPane.ERROR_MESSAGE);
@@ -164,28 +164,27 @@ public class AdminSignIn extends javax.swing.JFrame {
         InstructionsKt.redirectToDashboard(this);
     }
 
-    private void recordTransaction(int adminId) {
+    private void recordAttendance(int adminId) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDate = dateFormat.format(new Date());
 
         try (Connection conn = DatabaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("INSERT INTO Transaction (Date, Admin_ID) VALUES (?, ?)")) {
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO Attendance (Date, Admin_ID) VALUES (?, ?)")) {
 
             stmt.setString(1, currentDate);
             stmt.setInt(2, adminId);
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows > 0) {
-                JOptionPane.showMessageDialog(this, "Transaction recorded.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Attendance recorded.", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to record transaction.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to record attendance.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error recording transaction: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error recording attendance: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     /**
      * @param args the command line arguments
      */
