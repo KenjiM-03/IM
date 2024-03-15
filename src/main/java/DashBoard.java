@@ -65,7 +65,7 @@ private DefaultTableModel tableModel;
     }
 }
     //====================================================================================
-    private DefaultTableModel tableModel1;
+
 
     // ============================================================================
     /**
@@ -73,6 +73,7 @@ private DefaultTableModel tableModel;
      */
     public DashBoard() {
         initComponents();
+
         tableModel = (DefaultTableModel) jTable2.getModel();
         loadPieceworkEmployeeTally();
     }
@@ -136,11 +137,11 @@ private DefaultTableModel tableModel;
         Panel_CountLayout.setVerticalGroup(
             Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_CountLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(21, 21, 21)
                 .addComponent(BoldPiecework)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         Button_employee.setText("Employee");
