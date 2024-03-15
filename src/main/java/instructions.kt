@@ -123,8 +123,8 @@ fun redirectToCashAdvance(currentWindow: JFrame) {
 }
 
 fun redirectToOvertimeEligible(currentWindow: JFrame) {
-    val overtimeEligibleForm = OvertimeEligible()
-    overtimeEligibleForm.isVisible = true
+    //val overtimeEligibleForm = OvertimeEligible()
+    //overtimeEligibleForm.isVisible = true
     currentWindow.dispose()
 }
 
