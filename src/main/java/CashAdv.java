@@ -186,6 +186,13 @@ public class CashAdv extends javax.swing.JFrame {
     // Method to add a cash advance record
     private void addCashAdvance() {
         try {
+            int employeeID = Integer.parseInt(TField_EmployeeID.getText());
+            // Check if the employee has a record in Piecework_Details
+            if (!employeeHasPieceworkRecord(employeeID)) {
+                JOptionPane.showMessageDialog(this, "Employee does not have a piecework record. Cash advance cannot be created.");
+                return;
+            }
+
             double amount = Double.parseDouble(TField_Amount.getText());
             if (amount < 0) {
                 JOptionPane.showMessageDialog(this, "Amount cannot be negative!");
@@ -198,7 +205,7 @@ public class CashAdv extends javax.swing.JFrame {
             // Prepare SQL statement
             String sql = "INSERT INTO Cash_Advance (Employee_ID, Amount, Date_Requested, Description) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setInt(1, Integer.parseInt(TField_EmployeeID.getText())); // Assuming Employee_ID is an integer
+                pstmt.setInt(1, employeeID); // Assuming Employee_ID is an integer
                 pstmt.setDouble(2, amount);
                 pstmt.setDate(3, currentDate);
                 pstmt.setString(4, TArea_Description.getText()); // Adding description
@@ -222,6 +229,26 @@ public class CashAdv extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
         }
     }
+
+    private boolean employeeHasPieceworkRecord(int employeeID) {
+        try {
+            String sql = "SELECT COUNT(*) AS recordCount FROM Piecework_Details WHERE Employee_ID = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, employeeID);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        int recordCount = rs.getInt("recordCount");
+                        return recordCount > 0;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
+        }
+        return false;
+    }
+
 
 
     // Method to update the JTable with cash advances from the database
