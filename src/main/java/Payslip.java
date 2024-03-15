@@ -136,15 +136,17 @@ public class Payslip extends javax.swing.JFrame {
 
     private void displayAllEmployees() {
         try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT e.Employee_ID, e.Employee_Name, 'Piecework' AS Job_Type_Description "
-                     + "FROM Employees e");
-             ResultSet resultSet = statement.executeQuery()) {
-
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT DISTINCT e.Employee_ID, e.Employee_Name, 'Piecework' AS Job_Type_Description " +
+                             "FROM Employees e " +
+                             "JOIN Piecework_Details pd ON e.Employee_ID = pd.Employee_ID")) {
+            ResultSet resultSet = statement.executeQuery();
             displayEmployees(resultSet);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error fetching all employees: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error fetching all employees with piecework records: " + ex.getMessage());
         }
     }
+
 
 
     private void displayEmployees(ResultSet resultSet) throws SQLException {
