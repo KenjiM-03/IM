@@ -142,23 +142,13 @@ private DefaultTableModel tableModel;
 
         Button_Exit = new javax.swing.JButton();
         Panel_Count = new javax.swing.JPanel();
-        lbl_Regular = new javax.swing.JLabel();
-        Employeestotal = new javax.swing.JLabel();
-        lbl_Piecework = new javax.swing.JLabel();
-        Regular_total = new javax.swing.JLabel();
-        Piecework_total = new javax.swing.JLabel();
-        BoldRegular = new javax.swing.JLabel();
         BoldPiecework = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         Button_employee = new javax.swing.JButton();
         Button_piecework = new javax.swing.JButton();
-        Button_regular = new javax.swing.JButton();
         Button_payfactor = new javax.swing.JButton();
         Button_cashadvance = new javax.swing.JButton();
-        Button_overtimeeligible = new javax.swing.JButton();
         Button_payslip = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -172,43 +162,9 @@ private DefaultTableModel tableModel;
 
         Panel_Count.setBackground(new java.awt.Color(0, 51, 51));
 
-        lbl_Regular.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lbl_Regular.setForeground(new java.awt.Color(153, 255, 255));
-        lbl_Regular.setText("Regular:");
-
-        Employeestotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        Employeestotal.setForeground(new java.awt.Color(153, 255, 255));
-        Employeestotal.setText("EMPLOYEES TOTAL");
-
-        lbl_Piecework.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lbl_Piecework.setForeground(new java.awt.Color(153, 255, 255));
-        lbl_Piecework.setText("Piecework:");
-
-        Regular_total.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        Regular_total.setForeground(new java.awt.Color(153, 255, 255));
-        Regular_total.setText("00");
-
-        Piecework_total.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        Piecework_total.setForeground(new java.awt.Color(153, 255, 255));
-        Piecework_total.setText("00");
-
-        BoldRegular.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        BoldRegular.setForeground(new java.awt.Color(153, 255, 255));
-        BoldRegular.setText("Regular");
-
         BoldPiecework.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         BoldPiecework.setForeground(new java.awt.Color(153, 255, 255));
         BoldPiecework.setText("Piecework");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Employee ID", "Employee Name", "Hours Worked", "Overtime", "Date"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -225,51 +181,20 @@ private DefaultTableModel tableModel;
         Panel_CountLayout.setHorizontalGroup(
             Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_CountLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(Panel_CountLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Employeestotal)
-                            .addGroup(Panel_CountLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(lbl_Regular)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(Regular_total, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(Panel_CountLayout.createSequentialGroup()
-                                .addComponent(lbl_Piecework)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(Piecework_total, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(Panel_CountLayout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(BoldRegular, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BoldPiecework)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1154, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BoldPiecework)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         Panel_CountLayout.setVerticalGroup(
             Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_CountLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(Employeestotal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_Regular)
-                    .addComponent(Regular_total))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(Panel_CountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_Piecework)
-                    .addComponent(Piecework_total))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(BoldRegular)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(22, 22, 22)
                 .addComponent(BoldPiecework)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         Button_employee.setText("Employee");
@@ -286,13 +211,6 @@ private DefaultTableModel tableModel;
             }
         });
 
-        Button_regular.setText("Regular");
-        Button_regular.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_regularActionPerformed(evt);
-            }
-        });
-
         Button_payfactor.setText("Pay Factors");
         Button_payfactor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,13 +222,6 @@ private DefaultTableModel tableModel;
         Button_cashadvance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button_cashadvanceActionPerformed(evt);
-            }
-        });
-
-        Button_overtimeeligible.setText("Overtime Eligible");
-        Button_overtimeeligible.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Button_overtimeeligibleActionPerformed(evt);
             }
         });
 
@@ -330,16 +241,12 @@ private DefaultTableModel tableModel;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Button_piecework)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Button_regular)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Button_payfactor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Button_cashadvance)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Button_overtimeeligible)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Button_payslip)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 464, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Button_Exit))
             .addComponent(Panel_Count, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -350,13 +257,11 @@ private DefaultTableModel tableModel;
                     .addComponent(Button_Exit)
                     .addComponent(Button_employee)
                     .addComponent(Button_piecework)
-                    .addComponent(Button_regular)
                     .addComponent(Button_payfactor)
                     .addComponent(Button_cashadvance)
-                    .addComponent(Button_overtimeeligible)
                     .addComponent(Button_payslip))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Panel_Count, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(Panel_Count, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -370,10 +275,6 @@ private DefaultTableModel tableModel;
         InstructionsKt.redirectToPiecework(this);
     }//GEN-LAST:event_Button_pieceworkActionPerformed
 
-    private void Button_regularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_regularActionPerformed
-        InstructionsKt.redirectToRegular(this);
-    }//GEN-LAST:event_Button_regularActionPerformed
-
     private void Button_payfactorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_payfactorActionPerformed
         InstructionsKt.redirectToPayFactor(this);
     }//GEN-LAST:event_Button_payfactorActionPerformed
@@ -381,10 +282,6 @@ private DefaultTableModel tableModel;
     private void Button_cashadvanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_cashadvanceActionPerformed
         InstructionsKt.redirectToCashAdvance(this);
     }//GEN-LAST:event_Button_cashadvanceActionPerformed
-
-    private void Button_overtimeeligibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_overtimeeligibleActionPerformed
-        InstructionsKt.redirectToOvertimeEligible(this);
-    }//GEN-LAST:event_Button_overtimeeligibleActionPerformed
 
     private void Button_payslipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_payslipActionPerformed
         InstructionsKt.redirectToPayslip(this);
@@ -432,24 +329,14 @@ private DefaultTableModel tableModel;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel BoldPiecework;
-    private javax.swing.JLabel BoldRegular;
     private javax.swing.JButton Button_Exit;
     private javax.swing.JButton Button_cashadvance;
     private javax.swing.JButton Button_employee;
-    private javax.swing.JButton Button_overtimeeligible;
     private javax.swing.JButton Button_payfactor;
     private javax.swing.JButton Button_payslip;
     private javax.swing.JButton Button_piecework;
-    private javax.swing.JButton Button_regular;
-    private javax.swing.JLabel Employeestotal;
     private javax.swing.JPanel Panel_Count;
-    private javax.swing.JLabel Piecework_total;
-    private javax.swing.JLabel Regular_total;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JLabel lbl_Piecework;
-    private javax.swing.JLabel lbl_Regular;
     // End of variables declaration//GEN-END:variables
 }
