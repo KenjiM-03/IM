@@ -89,6 +89,14 @@ public class CashAdv extends javax.swing.JFrame {
             }
         });
 
+        Button_clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearFields();
+            }
+        });
+
+
         jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -247,15 +255,16 @@ public class CashAdv extends javax.swing.JFrame {
 
 
 
+
     private void clearFields() {
         TField_EmployeeID.setText("");
         Dropdown_EName.setSelectedIndex(-1);
         TField_Amount.setText("");
         TArea_Description.setText("");
-        // Clear the JTable
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
+        // Clear the selected row in the JTable
+        jTable1.getSelectionModel().clearSelection();
     }
+
 
     private void deleteCashAdvance() {
         int selectedRow = jTable1.getSelectedRow();
@@ -313,6 +322,8 @@ public class CashAdv extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
         }
     }
+
+
 
 
 
