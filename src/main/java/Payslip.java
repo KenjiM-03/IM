@@ -50,8 +50,13 @@ public class Payslip extends javax.swing.JFrame {
     }
 
     private void initTableModel() {
-        tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new String[]{"Employee ID", "Employee Name", "Job Type", "Gross Pay", "Total Deduction", "Net Salary"});
+        tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Disallow editing in the table
+            }
+        };
+        tableModel.setColumnIdentifiers(new String[]{"Employee ID", "Employee Name", "Job Type"});
         jTable1.setModel(tableModel);
     }
 
@@ -259,14 +264,14 @@ public class Payslip extends javax.swing.JFrame {
         // Check if a row is selected
         if (rowIndex != -1) {
             // Get the employee ID from the selected row (assuming it's stored as a String)
-            String employeeIDString = (String) jTable1.getValueAt(rowIndex, 0);
+            String employeeIDString = jTable1.getValueAt(rowIndex, 0).toString();
 
             // Parse the employee ID string to an integer
             int employeeID = Integer.parseInt(employeeIDString);
 
             // Fetch employee details and calculate payslip
-            String employeeName = (String) jTable1.getValueAt(rowIndex, 1);
-            String jobType = (String) jTable1.getValueAt(rowIndex, 2);
+            String employeeName = jTable1.getValueAt(rowIndex, 1).toString();
+            String jobType = jTable1.getValueAt(rowIndex, 2).toString();
             double[] payslipDetails = calculatePayslip(employeeID);
 
             // Generate payslip preview
