@@ -485,7 +485,14 @@
                         new String [] {
                                 "Employee ID", "Employee Name", "Size", "Quantity", "Transaction Id", "Date"
                         }
-                ));
+                ) {
+                    // Override isCellEditable method to make all cells non-editable
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false; // Returns false to make all cells non-editable
+                    }
+                });
+
                 jScrollPane1.setViewportView(jTable1);
 
                 Button_delete.setBackground(new java.awt.Color(51, 0, 0));

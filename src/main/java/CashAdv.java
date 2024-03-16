@@ -34,6 +34,9 @@ public class CashAdv extends javax.swing.JFrame {
             System.exit(1);
         }
 
+        // Make jTable1 not editable
+        jTable1.setDefaultEditor(Object.class, null);
+
         // Other initialization code...
 
 

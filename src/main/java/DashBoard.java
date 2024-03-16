@@ -75,6 +75,8 @@ private DefaultTableModel tableModel;
         initComponents();
         tableModel = (DefaultTableModel) jTable2.getModel();
         loadPieceworkEmployeeTally();
+        // Set the table as non-editable
+        jTable2.setDefaultEditor(Object.class, null);
     }
 
     /**

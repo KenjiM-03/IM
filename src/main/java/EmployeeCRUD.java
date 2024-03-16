@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
 import java.awt.*;
@@ -260,7 +261,18 @@ private void createEmployee() {
         // Create and set the document filter for the contact number text field
         ((AbstractDocument) TField_ContactNumber.getDocument()).setDocumentFilter(new NumberOnlyFilter());
 
-
+        // Disable cell editing for the jTable1
+        for (int i = 0; i < jTable1.getColumnCount(); i++) {
+            Class<?> columnClass = jTable1.getColumnClass(i);
+            DefaultCellEditor defaultEditor = new DefaultCellEditor(new JTextField()) {
+                @Override
+                public boolean isCellEditable(EventObject anEvent) {
+                    return false;
+                }
+            };
+            defaultEditor.setClickCountToStart(1);
+            jTable1.setDefaultEditor(columnClass, defaultEditor);
+        }
 
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
