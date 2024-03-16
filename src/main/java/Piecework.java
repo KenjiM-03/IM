@@ -495,7 +495,7 @@
 
                 jScrollPane1.setViewportView(jTable1);
 
-                Button_delete.setBackground(new java.awt.Color(51, 0, 0));
+                Button_delete.setBackground(new java.awt.Color(129, 39, 39));
                 Button_delete.setText("Delete");
 
                 Dropdown_Size.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));

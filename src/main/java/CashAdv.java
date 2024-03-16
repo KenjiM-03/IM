@@ -436,7 +436,7 @@ public class CashAdv extends javax.swing.JFrame {
 
         Button_clear.setText("Clear");
 
-        Button_delete.setBackground(new java.awt.Color(51, 0, 0));
+        Button_delete.setBackground(new java.awt.Color(129, 39, 39));
         Button_delete.setText("Delete");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

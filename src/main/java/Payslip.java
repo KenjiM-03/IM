@@ -782,11 +782,11 @@ public class Payslip extends javax.swing.JFrame {
                 }
 
                 //---- Button_delete ----
-                Button_delete.setBackground(new Color(0x330000));
+                Button_delete.setBackground(new Color(0x812727));
                 Button_delete.setText("Delete");
 
                 //---- Button_deleteall ----
-                Button_deleteall.setBackground(new Color(0x330000));
+                Button_deleteall.setBackground(new Color(0x812727));
                 Button_deleteall.setText("Delete All");
                 Button_deleteall.addActionListener(e -> Button_deleteallActionPerformed(e));
 

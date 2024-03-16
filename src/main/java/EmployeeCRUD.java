@@ -382,7 +382,7 @@ private void createEmployee() {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        Button_delete.setBackground(new java.awt.Color(51, 0, 0));
+        Button_delete.setBackground(new java.awt.Color(129, 39, 39));
         Button_delete.setText("Delete");
         Button_delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
